@@ -3,12 +3,10 @@ import { profile } from '../data/profile';
 ---
 
 <div class="caps">
-  {profile.capabilities.map((c, i) => (
+  {profile.capabilities.map((c) => (
     <div class="caps__panel" data-reveal>
       <div class="caps__head">
-        <span class="caps__index">{String(i + 1).padStart(2, '0')}</span>
         <h3 class="caps__title">{c.title}</h3>
-        <span class="caps__count">{String(c.items.length).padStart(2, '0')}</span>
       </div>
       <ul class="caps__chips">
         {c.items.map((item) => (
@@ -38,33 +36,14 @@ import { profile } from '../data/profile';
   .caps__panel:hover { border-color: var(--c-ink-faint); }
 
   .caps__head {
-    display: flex;
-    align-items: baseline;
-    gap: 0.625rem;
     padding-bottom: 1.125rem;
     margin-bottom: 1.375rem;
     border-bottom: 1px solid var(--c-line);
   }
 
-  .caps__index {
-    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
-    font-size: var(--t-micro);
-    color: var(--c-ink-faint);
-    letter-spacing: 0.02em;
-  }
-
   .caps__title {
-    flex: 1;
     font-size: var(--t-h3);
   }
-
-  .caps__count {
-    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
-    font-size: var(--t-micro);
-    color: var(--c-ink-faint);
-  }
-  .caps__count::before { content: '['; }
-  .caps__count::after { content: ']'; }
 
   .caps__chips {
     display: flex;

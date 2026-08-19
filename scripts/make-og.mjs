@@ -14,7 +14,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   </text>
   <text x="80" y="358" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
         font-size="64" font-weight="600" letter-spacing="-2" fill="#1A1A1A">
-    turn ideas into workable MVPs.
+    turn ideas into launch-ready MVPs.
   </text>
   <line x1="80" y1="470" x2="1120" y2="470" stroke="#E8E8E8" stroke-width="1"/>
   <text x="80" y="530" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"

@@ -1,0 +1,34 @@
+---
+/**
+ * Site-wide soft-launch notice. Sits above the Nav in normal document flow
+ * (not sticky) — it scrolls away with the page, and the sticky Nav below it
+ * pins flush to the true viewport top once you scroll past it.
+ */
+---
+
+<div class="announce">
+  <p class="announce__text">
+    We're in soft launch. Early users get
+    <strong>30% off</strong> their engagement.
+  </p>
+</div>
+
+<style>
+  .announce {
+    background: var(--c-accent);
+    padding: 0.5rem var(--s-gutter);
+  }
+
+  .announce__text {
+    max-width: var(--w-max);
+    margin-inline: auto;
+    text-align: center;
+    font-size: var(--t-small);
+    line-height: 1.4;
+    color: #fff;
+  }
+
+  .announce__text strong {
+    font-weight: 700;
+  }
+</style>

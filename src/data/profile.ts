@@ -2,7 +2,11 @@ export const profile = {
   name: 'Yu-Wen Chen',
   alias: 'Katness',
   shortName: 'Yu-Wen Chen',
-  role: 'Helping non-technical founders turn vibe-coded prototypes into workable MVPs.',
+  /** Site/brand name — shown in the Nav, browser tab title, and social share cards.
+      Distinct from `name`, which stays the actual person for the About page, footer
+      attribution, and the Person JSON-LD schema. */
+  brandName: 'Vizino AI',
+  role: 'Helping non-technical founders turn vibe-coded prototypes into launch-ready MVPs.',
   location: 'Ottawa, Canada',
   email: 'yuwen.chen.ca@gmail.com',
   linkedin: 'https://www.linkedin.com/in/yu-wen-chen-katness-chen-8340b9a4/',
@@ -10,13 +14,13 @@ export const profile = {
   resume: null as string | null,
 
   bioShort:
-    "I'm a software engineer based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, I've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. I partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
+    "We're a software engineering team based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, we've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. We partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
 
   bioLong: [
-    "I'm a software engineer based in Ottawa, Canada. I spent six years as a software engineer at startups in Taiwan and Singapore, followed by two years of freelancing — most of it on SaaS products taken from a blank repository to a shipped MVP.",
-    "My work sits across the whole stack: interfaces in React and Vue, services in Nest.js and Node.js, relational and document data models, and deployments on GCP and AWS. The thread running through it is that I like owning a feature end to end, from the data model up to the pixel.",
+    "We're a software engineering team based in Ottawa, Canada. We spent six years at startups in Taiwan and Singapore, followed by two years of freelancing — most of it on SaaS products taken from a blank repository to a shipped MVP.",
+    "Our work sits across the whole stack: interfaces in React and Vue, services in Nest.js and Node.js, relational and document data models, and deployments on GCP and AWS. The thread running through it is that we like owning a feature end to end, from the data model up to the pixel.",
     "More recently that has extended into integrating AI into products — both cloud-hosted models and locally-run ones — which is what most of the work below is about.",
-    "Today, I focus on collaborating with non-technical founders. While AI allows almost anyone to 'vibe-code' an incredible initial proof-of-concept, taking a product across the finish line to become a truly workable, launch-ready MVP requires deep technical structure. I work closely with founders to pinpoint their technical hurdles, unblocking their workflows and establishing a solid foundation for rapid product iterations.",
+    "Today, we focus on collaborating with non-technical founders. While AI allows almost anyone to 'vibe-code' an incredible initial proof-of-concept, taking a product across the finish line to become a truly workable, launch-ready MVP requires deep technical structure. We work closely with founders to pinpoint their technical hurdles, unblocking their workflows and establishing a solid foundation for rapid product iterations.",
   ],
 
   capabilities: [
@@ -56,7 +60,7 @@ export const profile = {
       period: '2022 — 2024',
       company: 'StraitsX',
       url: 'https://www.straitsx.com/',
-      location: 'Singapore',
+      location: 'Singapore (Remote)',
       title: 'Software Engineer',
       summary:
         'Led a redesign of the core database schema that cut storage by 80% while making the system extensible to additional currencies and blockchains.',

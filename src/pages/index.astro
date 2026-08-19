@@ -16,10 +16,6 @@ const work = (await getCollection('work'))
   <!-- ============ Hero ============ -->
   <section class="hero">
     <div class="container">
-      <p class="eyebrow hero__eyebrow">
-        {profile.name} ({profile.alias}) — {profile.location}
-      </p>
-
       <h1 class="hero__title">{profile.role}</h1>
 
       <p class="lead hero__bio">{profile.bioShort}</p>
@@ -54,7 +50,7 @@ const work = (await getCollection('work'))
   <!-- ============ Capabilities ============ -->
   <section class="section section--tight">
     <div class="container">
-      <SectionHeading eyebrow="Capabilities" title="What I work with." />
+      <SectionHeading eyebrow="Capabilities" title="What we work with." />
       <Capabilities />
     </div>
   </section>
@@ -95,7 +91,6 @@ const work = (await getCollection('work'))
     padding-top: clamp(4rem, 11vw, 9rem);
     padding-bottom: clamp(3.5rem, 8vw, 6.5rem);
   }
-  .hero__eyebrow { margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
 
   .hero__title {
     font-size: var(--t-hero);
@@ -109,14 +104,6 @@ const work = (await getCollection('work'))
     margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
     max-width: 46rem;
   }
-
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: clamp(2rem, 4vw, 2.75rem);
-  }
-  .hero__actions span { font-size: 0.8em; }
 
   .section--bleed { overflow: hidden; }
 

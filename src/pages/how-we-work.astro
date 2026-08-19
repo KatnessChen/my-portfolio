@@ -1,0 +1,280 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { profile } from '../data/profile';
+
+interface Principle {
+  title: string;
+  description: string;
+}
+
+const principles: Principle[] = [
+  {
+    title: 'Milestones, not upsells',
+    description:
+      "We plan around your budget and your next business milestone. Success isn't a flashier feature — it's reaching that milestone.",
+  },
+  {
+    title: 'A long-term partner',
+    description:
+      'We want to be your reliable technical partner for the long run, not a one-shot dev shop.',
+  },
+  {
+    title: 'Vibe-coding, hardened',
+    description:
+      "Replacing your vibe-coding isn't the goal. Our Code Quality Diagnosis gives you guardrails to take it further — and cuts your AI credit bill.",
+  },
+  {
+    title: 'The right tool, not our favorite one',
+    description:
+      "We choose technology based on what your product needs, not what's fastest or most familiar for us.",
+  },
+  {
+    title: 'AI-accelerated delivery',
+    description:
+      "We're a very small team building with AI — you won't wait months or spend a fortune to see results.",
+  },
+  {
+    title: 'Considered visual design',
+    description:
+      "We're not a design studio, but we use AI design tools to ship interfaces that look sharp and feel smooth.",
+  },
+  {
+    title: 'Security and performance, by default',
+    description: "We won't downplay security or performance just to win the project.",
+  },
+  {
+    title: 'Specs that outlast us',
+    description:
+      "We help you write user stories, so you leave with a detailed spec — the key to iterating fast with AI long after we're gone.",
+  },
+  {
+    title: 'Radical transparency',
+    description:
+      'Technical documentation, regular demos, and real handoff sessions. No black box, no lock-in.',
+  },
+  {
+    title: 'Built-in analytics',
+    description: 'We can wire up logging so you can actually see how users use your product.',
+  },
+  {
+    title: 'Investor-ready, when you need it',
+    description:
+      'We help you produce the documentation that makes your strongest case to investors.',
+  },
+  {
+    title: '100% Canadian, not offshore',
+    description:
+      "We're based in Ottawa, working in your time zone — no outsourcing, no overnight hand-offs, no language or culture gap to bridge.",
+  },
+];
+---
+
+<BaseLayout title="How We Work" description="My approach to partnering with non-technical founders on their product journey.">
+  <section class="ah">
+    <div class="container">
+      <div class="ah__top">
+        <p class="eyebrow">Collaboration</p>
+      </div>
+      <h1 class="ah__title">How We Work</h1>
+      <p class="lead ah__loc">Building reliable long-term partnerships, not one-shot projects.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <SectionHeading eyebrow="Philosophy" title="How we think about the work." />
+
+      <div class="principles">
+        {principles.map((p) => (
+          <div class="principle" data-reveal>
+            <span class="principle__marker" aria-hidden="true"></span>
+            <h3 class="principle__title">{p.title}</h3>
+            <p class="principle__desc">{p.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <SectionHeading eyebrow="Process" title="Four steps to get started." />
+
+      <ol class="steps">
+        <li class="step" data-reveal>
+          <div class="step__number">01</div>
+          <div class="step__body">
+            <h3 class="step__title">Know Your Ideas</h3>
+            <p class="step__desc">We start by understanding your vision. What problem are you solving? Who are your users? What makes your solution unique?</p>
+          </div>
+        </li>
+
+        <li class="step" data-reveal>
+          <div class="step__number">02</div>
+          <div class="step__body">
+            <h3 class="step__title">Know Your Current Stage</h3>
+            <p class="step__desc">Where are you now? Do you have wireframes, a prototype, or an MVP? Understanding your starting point helps us move efficiently.</p>
+          </div>
+        </li>
+
+        <li class="step" data-reveal>
+          <div class="step__number">03</div>
+          <div class="step__body">
+            <h3 class="step__title">Know Your Next Steps</h3>
+            <p class="step__desc">What's your timeline and budget? Are you raising funds, testing with users, or preparing for launch? This shapes our approach.</p>
+          </div>
+        </li>
+
+        <li class="step" data-reveal>
+          <div class="step__number">04</div>
+          <div class="step__body">
+            <h3 class="step__title">Discuss How to Collaborate</h3>
+            <p class="step__desc">
+              Based on your needs, we'll choose the{' '}
+              <a class="link" href="/engagement-model">engagement model</a> that works
+              best—whether it's milestone-based delivery or ongoing iterations.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <hr class="rule" />
+      <div class="cta" data-reveal>
+        <h2 class="cta__title">Ready to start?</h2>
+        <div class="cta__actions">
+          <a class="btn" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a class="btn btn--ghost" href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+            LinkedIn <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ah {
+    padding: clamp(4rem, 12vw, 8rem) 0 clamp(2.5rem, 8vw, 5rem);
+  }
+  .ah__top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .ah__title {
+    font-size: var(--t-h1);
+    font-weight: 500;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-display);
+    margin-bottom: 0.75rem;
+  }
+  .ah__loc {
+    color: var(--c-ink-muted);
+    margin-bottom: 0;
+  }
+
+  /* Philosophy */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .principle {
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    padding: clamp(1.5rem, 3vw, 1.875rem);
+    transition: border-color 0.3s var(--ease);
+  }
+  .principle:hover { border-color: var(--c-ink-faint); }
+
+  .principle__marker {
+    display: block;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: var(--c-accent);
+    margin-bottom: 1rem;
+  }
+
+  .principle__title {
+    font-size: var(--t-h3);
+    margin-bottom: 0.625rem;
+  }
+
+  .principle__desc {
+    color: var(--c-ink-muted);
+    font-size: var(--t-small);
+    line-height: var(--lh-body);
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+
+  .step__number {
+    font-family: var(--f-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    color: var(--c-accent);
+    line-height: 1;
+    opacity: 0.25;
+  }
+
+  .step__body {
+    padding-top: 0.25rem;
+  }
+
+  .step__title {
+    font-size: var(--t-h3);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  .step__desc {
+    color: var(--c-ink-muted);
+    margin-bottom: 0;
+    max-width: 60ch;
+  }
+
+  .rule {
+    border: 0;
+    height: 1px;
+    background: var(--c-line);
+    margin: 0 0 clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .cta {
+    text-align: center;
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  .cta__title {
+    font-size: var(--t-h2);
+    margin-bottom: 1.75rem;
+  }
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+</style>

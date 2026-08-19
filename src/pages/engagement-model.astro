@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { profile } from '../data/profile';
+
+type EngagementType = 'Fixed-Rate Project' | 'Monthly Subscription';
+
+interface Stage {
+  phase: string;
+  title: string;
+  description: string;
+  engagement: EngagementType;
+  planSummary: string;
+  features: string[];
+}
+
+const stages: Stage[] = [
+  {
+    phase: 'Post Vibe-Coding',
+    title: 'Codebase Quality Diagnosis',
+    description:
+      'Comprehensive health check of your AI-assisted codebase. We assess code quality, architecture scalability, security practices, rate limiting, API key exposure risks, and database performance.',
+    engagement: 'Fixed-Rate Project',
+    planSummary:
+      'Broken into clear milestones — like completing core features, integrating APIs, or launching your MVP — each with a transparent quote and delivery timeline.',
+    features: ['Per-milestone pricing', 'Clear scope', 'Predictable timeline', 'Diagnostic report'],
+  },
+  {
+    phase: 'Pre-Launch',
+    title: 'Launch-Readiness',
+    description:
+      'Final preparation before going live. We help you set up monitoring, error tracking, backup strategies, security hardening, and performance optimization to ensure a smooth launch.',
+    engagement: 'Fixed-Rate Project',
+    planSummary:
+      'Milestone-based delivery with a predictable timeline and transparent quote for each launch-preparation task.',
+    features: ['Regular demo check-ins', 'Handoff documentation', 'Launch checklist'],
+  },
+  {
+    phase: 'Launch & Operations',
+    title: 'Go-Live Support',
+    description:
+      'Keep your product running smoothly with ongoing maintenance, monitoring, user activity reporting, and performance insights into how your product behaves in production.',
+    engagement: 'Monthly Subscription',
+    planSummary:
+      'A monthly allotment of development hours — use them for monitoring, maintenance, bug fixes, or anything your product needs, with unlimited revisions within your hours.',
+    features: ['Flexible monthly hours', 'Unlimited revisions', 'Performance monitoring'],
+  },
+  {
+    phase: 'Post-Launch Iteration',
+    title: 'Feature Development',
+    description:
+      'Monthly development hours for building new features, fixing bugs, and refining your product based on user feedback — with unlimited revisions for rapid iteration.',
+    engagement: 'Monthly Subscription',
+    planSummary:
+      'Dedicated monthly hours for feature builds, bug fixes, and maintenance as you iterate based on user feedback.',
+    features: ['Flexible monthly hours', 'Rapid iteration cycles', 'Ongoing guidance'],
+  },
+  {
+    phase: 'Fundraising Preparation',
+    title: 'Investment-Readiness',
+    description:
+      'Prepare for investor technical due diligence. We document your architecture, strengthen security practices, ensure compliance, and assess code quality to meet investor standards.',
+    engagement: 'Fixed-Rate Project',
+    planSummary:
+      'A comprehensive technical package prepared for due diligence, on a clear timeline that fits your fundraising schedule.',
+    features: ['Architecture docs', 'Security & compliance audit', 'Technical DD prep'],
+  },
+];
+---
+
+<BaseLayout
+  title="Engagement Model"
+  description="Find the right engagement model for wherever your product is right now."
+>
+  <section class="ah">
+    <div class="container">
+      <p class="eyebrow">Engagement</p>
+      <h1 class="ah__title">Engagement Model</h1>
+      <p class="lead ah__loc">The right way of working for wherever your product is right now.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <SectionHeading eyebrow="Know Your Stage" title="Find the plan that fits." />
+      <p class="lifecycle-intro" data-reveal>
+        The five stages below span the distance between a vibe-coded prototype and a
+        fundraising-ready product. You're probably standing on one of them right now — pick the
+        one that matches where you are, not the whole roadmap.
+      </p>
+
+      <ul class="lifecycle">
+        {stages.map((stage) => (
+          <li class="lifecycle__stage" data-reveal>
+            <span class="lifecycle__marker" aria-hidden="true"></span>
+
+            <div class="lifecycle__body">
+              <p class="lifecycle__phase">{stage.phase}</p>
+              <h3 class="lifecycle__title">{stage.title}</h3>
+              <p class="lifecycle__desc">{stage.description}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <hr class="rule" />
+      <div class="cta" data-reveal>
+        <h2 class="cta__title">Let's discuss your needs.</h2>
+        <div class="cta__actions">
+          <a class="btn" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a class="btn btn--ghost" href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+            LinkedIn <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---- Hero ---- */
+  .ah {
+    padding: clamp(4rem, 12vw, 8rem) 0 clamp(2.5rem, 8vw, 5rem);
+  }
+  .ah__title {
+    margin-top: 1rem;
+    font-size: var(--t-h1);
+    font-weight: 500;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-display);
+  }
+  .ah__loc {
+    margin-top: 1.5rem;
+    max-width: 44rem;
+  }
+
+  /* ---- Lifecycle timeline ---- */
+  .lifecycle-intro {
+    color: var(--c-ink-muted);
+    max-width: 56ch;
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .lifecycle {
+    position: relative;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .lifecycle__stage {
+    position: relative;
+    padding-left: clamp(2rem, 5vw, 2.5rem);
+    padding-bottom: clamp(2.75rem, 6vw, 4rem);
+  }
+  .lifecycle__stage:last-child { padding-bottom: 0; }
+
+  /* connecting spine — drawn per-item, running from below this marker to the next one.
+     no numbering: these stages aren't steps you complete in order, they're positions on
+     a spectrum — the dot marks "you could be here," not "step N of 5." */
+  .lifecycle__stage:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 0.3125rem;
+    top: 1.5rem;
+    bottom: 0;
+    width: 1px;
+    background: var(--c-line);
+  }
+
+  .lifecycle__marker {
+    position: absolute;
+    left: 0;
+    top: 0.4375rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: var(--c-accent);
+  }
+
+  .lifecycle__body {
+    padding-top: 0.125rem;
+  }
+
+  .lifecycle__phase {
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--c-ink-faint);
+    margin-bottom: 0.5rem;
+  }
+
+  .lifecycle__title {
+    font-size: var(--t-h3);
+    margin-bottom: 0.75rem;
+  }
+
+  .lifecycle__desc {
+    color: var(--c-ink-muted);
+    max-width: 52ch;
+  }
+
+  /* ---- CTA ---- */
+  .rule {
+    border: 0;
+    height: 1px;
+    background: var(--c-line);
+    margin: 0 0 clamp(2.5rem, 6vw, 4rem);
+  }
+  .cta {
+    text-align: center;
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  .cta__title {
+    font-size: var(--t-h2);
+    margin-bottom: 1.75rem;
+  }
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+</style>
