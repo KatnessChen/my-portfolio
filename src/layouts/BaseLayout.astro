@@ -67,6 +67,13 @@ const personSchema = {
   </head>
 
   <body>
+    <!-- Nebula Background -->
+    <div class="nebula-bg-container" aria-hidden="true">
+      <div class="nebula-blob nebula-1"></div>
+      <div class="nebula-blob nebula-2"></div>
+      <div class="nebula-blob nebula-3"></div>
+    </div>
+
     <a class="skip-link" href="#main">Skip to content</a>
     <Nav />
     <main id="main">
@@ -91,6 +98,36 @@ const personSchema = {
         els.forEach((el) => io.observe(el));
       } else {
         els.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // Parallax scrolling + mouse movement for nebula background layers
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const n1 = document.querySelector('.nebula-1') as HTMLElement;
+        const n2 = document.querySelector('.nebula-2') as HTMLElement;
+        const n3 = document.querySelector('.nebula-3') as HTMLElement;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let scrolled = 0;
+
+        const updateTransform = () => {
+          if (n1) n1.style.transform = `translate3d(${mouseX * 0.02}px, ${scrolled * 0.1 + mouseY * 0.02}px, 0)`;
+          if (n2) n2.style.transform = `translate3d(${mouseX * -0.015}px, ${scrolled * -0.05 + mouseY * -0.015}px, 0)`;
+          if (n3) n3.style.transform = `translate3d(${mouseX * 0.025}px, ${scrolled * 0.08 + mouseY * 0.025}px, 0)`;
+        };
+
+        window.addEventListener('scroll', () => {
+          scrolled = window.pageYOffset;
+          updateTransform();
+        }, { passive: true });
+
+        window.addEventListener('mousemove', (e) => {
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2;
+          mouseX = e.clientX - centerX;
+          mouseY = e.clientY - centerY;
+          updateTransform();
+        }, { passive: true });
       }
     </script>
   </body>
