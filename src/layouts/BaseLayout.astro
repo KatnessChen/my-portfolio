@@ -7,9 +7,7 @@ import { profile } from '../data/profile';
 interface Props {
   title?: string;
   description?: string;
-  /** 相對路徑的 OG 圖，例如 /images/og-home.png */
   ogImage?: string;
-  /** 首頁才輸出 Person JSON-LD */
   isHome?: boolean;
 }
 
@@ -77,7 +75,6 @@ const personSchema = {
     <Footer />
 
     <script>
-      // 全站唯一的 JS：scroll reveal
       const els = document.querySelectorAll('[data-reveal]');
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && els.length) {
         const io = new IntersectionObserver(

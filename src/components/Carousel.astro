@@ -1,8 +1,5 @@
 ---
-/**
- * 水平 scroll-snap carousel。
- * 無 JS 時仍可用原生捲動（含觸控）；JS 只負責上/下一張按鈕、計數器與進度條。
- */
+
 interface Props {
   label: string;
   count: number;
@@ -54,12 +51,10 @@ const total = String(count).padStart(2, '0');
 
 <style>
   .car {
-    /* 讓第一張卡片對齊 container 左緣，但軌道本身可以滿版延伸出去 */
     --car-pad: max(var(--s-gutter), calc((100% - var(--w-max)) / 2 + var(--s-gutter)));
     --car-gap: clamp(1rem, 2vw, 1.75rem);
   }
 
-  /* ---- 標頭列：計數器 + 按鈕 ---- */
   .car__bar {
     display: flex;
     align-items: center;
@@ -103,7 +98,6 @@ const total = String(count).padStart(2, '0');
   }
   .car__btn:disabled { opacity: 0.28; cursor: default; }
 
-  /* ---- 軌道 ---- */
   .car__viewport {
     overflow-x: auto;
     overflow-y: hidden;
@@ -112,7 +106,6 @@ const total = String(count).padStart(2, '0');
     scroll-padding-inline-start: var(--car-pad);
     scrollbar-width: none;
     -ms-overflow-style: none;
-    /* 焦點框不要被 overflow 裁掉 */
     padding-block: 4px;
   }
   .car__viewport::-webkit-scrollbar { display: none; }
@@ -126,7 +119,6 @@ const total = String(count).padStart(2, '0');
     padding: 0 var(--car-pad);
   }
 
-  /* slot 進來的 <li> */
   .car__track > :global(li) {
     flex: 0 0 clamp(16.5rem, 82vw, 22rem);
     scroll-snap-align: start;
@@ -138,7 +130,6 @@ const total = String(count).padStart(2, '0');
     .car__track > :global(li) { flex-basis: clamp(22rem, 30vw, 27rem); }
   }
 
-  /* ---- 進度條 ---- */
   .car__progress {
     position: relative;
     height: 1px;
@@ -173,7 +164,6 @@ const total = String(count).padStart(2, '0');
 
     const slides = () => Array.from(track.children) as HTMLElement[];
 
-    /** 一張卡片 + 間距的寬度 */
     const step = () => {
       const s = slides();
       if (s.length < 2) return s[0]?.offsetWidth ?? 0;
@@ -191,7 +181,6 @@ const total = String(count).padStart(2, '0');
 
       if (current) current.textContent = String(Math.min(index + 1, count)).padStart(2, '0');
 
-      // 容一點誤差，避免 subpixel 導致按鈕永遠不 disabled
       if (prev) prev.disabled = x <= 1;
       if (next) next.disabled = x >= max - 1;
 

@@ -1,4 +1,3 @@
-// 用 Playwright 截線上網站的圖。用法：node scripts/shoot.mjs
 import { chromium } from '/Users/kc/Develop/100_Case/06_MaraMap/MaraMap-Frontend/node_modules/playwright/index.mjs';
 
 const OUT = 'public/images/work';

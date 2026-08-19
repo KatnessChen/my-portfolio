@@ -102,7 +102,6 @@ const work = (await getCollection('work'))
     font-weight: 500;
     line-height: var(--lh-tight);
     letter-spacing: var(--ls-display);
-    /* 22ch：讓 "building AI-integrated" 保持同一行，不斷在連字號上 */
     max-width: 22ch;
   }
 
@@ -123,7 +122,7 @@ const work = (await getCollection('work'))
 
   /* ---- Contact ---- */
   .contact {
-    padding-top: 0; /* 縮小聯絡區與上方 section 的間距 */
+    padding-top: 0;
   }
   .contact__inner { padding-top: clamp(1.5rem, 3.5vw, 2.5rem); }
   .contact__desc {

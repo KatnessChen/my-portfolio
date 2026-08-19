@@ -1,5 +1,3 @@
-// 把 public/images/work/ 的 PNG 轉成 WebP（限寬 1920），原圖移到 _originals/。
-// 用法：node scripts/optimize-images.mjs
 import sharp from 'sharp';
 import { readdir, mkdir, rename, stat } from 'node:fs/promises';
 import path from 'node:path';
@@ -28,4 +26,4 @@ for (const f of files) {
 }
 
 const kb = (n) => `${(n / 1024).toFixed(0)}KB`;
-console.log(`\n總計 ${kb(before)} → ${kb(after)}（省下 ${((1 - after / before) * 100).toFixed(0)}%）`);
+console.log(`\nTotal ${kb(before)} → ${kb(after)} (${((1 - after / before) * 100).toFixed(0)}% saved)`);

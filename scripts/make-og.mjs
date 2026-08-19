@@ -1,5 +1,3 @@
-// 產生 1200×630 的 OG 分享圖（LinkedIn / Twitter 預覽用）
-// 用法：node scripts/make-og.mjs
 import sharp from 'sharp';
 import { writeFileSync } from 'node:fs';
 

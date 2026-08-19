@@ -11,7 +11,6 @@ const work = defineCollection({
     duration: z.string().optional(),
     featured: z.boolean().default(true),
     order: z.number(),
-    /** public/images/work/ 底下的檔名；未提供時卡片顯示排版式佔位 */
     cover: z.string().optional(),
     coverAlt: z.string().optional(),
     gallery: z
@@ -30,7 +29,6 @@ const work = defineCollection({
       })
       .default({}),
     highlights: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
-    /** true = 內容尚未補完，頁面會顯示 "case study in progress" 註記 */
     draft: z.boolean().default(false),
   }),
 });

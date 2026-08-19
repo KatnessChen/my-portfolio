@@ -1,21 +1,17 @@
 export const profile = {
   name: 'Yu-Wen Chen',
   alias: 'Katness',
-  // Nav / footer 用的短名
   shortName: 'Yu-Wen Chen',
   role: 'Helping non-technical founders turn vibe-coded prototypes into workable MVPs.',
   location: 'Ottawa, Canada',
   email: 'yuwen.chen.ca@gmail.com',
   linkedin: 'https://www.linkedin.com/in/yu-wen-chen-katness-chen-8340b9a4/',
   github: 'https://github.com/KatnessChen',
-  // 履歷放到 public/resume.pdf 後把 null 改成 '/resume.pdf'
   resume: null as string | null,
 
-  /** 首頁 Hero — 2–3 句 */
   bioShort:
     "I'm a software engineer based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, I've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. I partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
 
-  /** About 頁 — 段落陣列。之後補完整長版自介，直接加段落即可。 */
   bioLong: [
     "I'm a software engineer based in Ottawa, Canada. I spent six years as a software engineer at startups in Taiwan and Singapore, followed by two years of freelancing — most of it on SaaS products taken from a blank repository to a shipped MVP.",
     "My work sits across the whole stack: interfaces in React and Vue, services in Nest.js and Node.js, relational and document data models, and deployments on GCP and AWS. The thread running through it is that I like owning a feature end to end, from the data model up to the pixel.",
@@ -23,7 +19,6 @@ export const profile = {
     "Today, I focus on collaborating with non-technical founders. While AI allows almost anyone to 'vibe-code' an incredible initial proof-of-concept, taking a product across the finish line to become a truly workable, launch-ready MVP requires deep technical structure. I work closely with founders to pinpoint their technical hurdles, unblocking their workflows and establishing a solid foundation for rapid product iterations.",
   ],
 
-  /** 首頁 Capabilities 三欄 */
   capabilities: [
     {
       title: 'Frontend',
@@ -39,7 +34,6 @@ export const profile = {
     },
   ],
 
-  /** About 頁時間軸 */
   experience: [
     {
       period: 'Apr — Jun 2026',

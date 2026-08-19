@@ -4,7 +4,6 @@ export const categoryLabel: Record<string, string> = {
   static: 'Static site',
 };
 
-/** 把 stack 物件壓成扁平清單，卡片上顯示前 N 個 */
 export function flatStack(stack: {
   frontend?: readonly string[];
   backend?: readonly string[];

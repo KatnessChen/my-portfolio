@@ -41,7 +41,6 @@ a {
 
 p { text-wrap: pretty; }
 
-/* 內文連結：hairline 底線，hover 才轉強調色 */
 .link {
   color: inherit;
   border-bottom: 1px solid var(--c-line);
@@ -70,7 +69,6 @@ p { text-wrap: pretty; }
   border-top: 1px solid var(--c-line);
 }
 
-/* 小標籤：Selected Work / Capabilities 這種 eyebrow */
 .eyebrow {
   font-family: var(--f-body);
   font-size: var(--t-micro);
@@ -117,7 +115,6 @@ p { text-wrap: pretty; }
   border-color: var(--c-accent);
 }
 
-/* ---- Scroll reveal (唯一的 JS 效果) -------------------------------- */
 [data-reveal] {
   opacity: 0;
   transform: translateY(16px);
