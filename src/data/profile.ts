@@ -3,7 +3,7 @@ export const profile = {
   alias: 'Katness',
   // Nav / footer 用的短名
   shortName: 'Yu-Wen Chen',
-  role: 'Helping non-technical founders turn ideas into workable MVPs.',
+  role: 'Helping non-technical founders turn vibe-coded prototypes into workable MVPs.',
   location: 'Ottawa, Canada',
   email: 'yuwen.chen.ca@gmail.com',
   linkedin: 'https://www.linkedin.com/in/yu-wen-chen-katness-chen-8340b9a4/',
