@@ -23,18 +23,6 @@ const work = (await getCollection('work'))
       <h1 class="hero__title">{profile.role}</h1>
 
       <p class="lead hero__bio">{profile.bioShort}</p>
-
-      <div class="hero__actions">
-        <a class="btn" href="#work">View selected work</a>
-        <a
-          class="btn btn--ghost"
-          href={profile.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          LinkedIn <span aria-hidden="true">↗</span>
-        </a>
-      </div>
     </div>
   </section>
 
@@ -77,11 +65,8 @@ const work = (await getCollection('work'))
       <hr class="rule" />
       <div class="contact__inner" data-reveal>
         <p class="eyebrow">Contact</p>
-        <h2 class="contact__title">
-          Are you a non-technical founder who has vibe-coded an amazing prototype, but needs help crossing the last mile? Let’s unblock your product and build a truly workable, launch-ready MVP.
-        </h2>
         <div class="contact__actions">
-          <a class="btn" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a class="btn" href={`mailto:${profile.email}`} target="blank">{profile.email}</a>
           <a
             class="btn btn--ghost"
             href={profile.linkedin}
@@ -137,13 +122,10 @@ const work = (await getCollection('work'))
   .section--bleed { overflow: hidden; }
 
   /* ---- Contact ---- */
-  .contact__inner { padding-top: clamp(2.5rem, 5vw, 4rem); }
-  .contact__title {
-    margin-top: 1.25rem;
-    font-size: var(--t-h1);
-    letter-spacing: var(--ls-display);
-    max-width: 20ch;
+  .contact {
+    padding-top: 0; /* 縮小聯絡區與上方 section 的間距 */
   }
+  .contact__inner { padding-top: clamp(1.5rem, 3.5vw, 2.5rem); }
   .contact__desc {
     margin-top: 1.5rem;
     max-width: 38rem;

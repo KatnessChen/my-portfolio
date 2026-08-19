@@ -13,7 +13,7 @@ export const profile = {
 
   /** 首頁 Hero — 2–3 句 */
   bioShort:
-    "I'm a full-stack engineer based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, I've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. I partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, workable MVPs that can scale and iterate rapidly.",
+    "I'm a full-stack engineer based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, I've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. I partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
 
   /** About 頁 — 段落陣列。之後補完整長版自介，直接加段落即可。 */
   bioLong: [
