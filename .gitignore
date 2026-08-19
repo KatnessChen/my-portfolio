@@ -6,3 +6,8 @@ dist/
 *.log
 _originals/
 .claude/settings.local.json
+_data-_data-templates/
+_drafts/
+
+NEXT-STEPS.md
+PLAN.md
