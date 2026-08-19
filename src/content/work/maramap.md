@@ -3,7 +3,7 @@ title: MaraMap
 tagline: Turns a decade of social-media posts into an interactive map, timeline and list — a running and travel log rebuilt from a raw Facebook export.
 category: fullstack-cloud-ai
 year: '2026'
-role: Solo — full-stack & data pipeline
+role: Solo — software engineer & data pipeline
 featured: true
 order: 1
 stack:

@@ -13,11 +13,11 @@ export const profile = {
 
   /** 首頁 Hero — 2–3 句 */
   bioShort:
-    "I'm a full-stack engineer based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, I've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. I partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
+    "I'm a software engineer based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, I've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. I partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
 
   /** About 頁 — 段落陣列。之後補完整長版自介，直接加段落即可。 */
   bioLong: [
-    "I'm a full-stack engineer based in Ottawa, Canada. I spent six years as a software engineer at startups in Taiwan and Singapore, followed by two years of freelancing — most of it on SaaS products taken from a blank repository to a shipped MVP.",
+    "I'm a software engineer based in Ottawa, Canada. I spent six years as a software engineer at startups in Taiwan and Singapore, followed by two years of freelancing — most of it on SaaS products taken from a blank repository to a shipped MVP.",
     "My work sits across the whole stack: interfaces in React and Vue, services in Nest.js and Node.js, relational and document data models, and deployments on GCP and AWS. The thread running through it is that I like owning a feature end to end, from the data model up to the pixel.",
     "More recently that has extended into integrating AI into products — both cloud-hosted models and locally-run ones — which is what most of the work below is about.",
     "Today, I focus on collaborating with non-technical founders. While AI allows almost anyone to 'vibe-code' an incredible initial proof-of-concept, taking a product across the finish line to become a truly workable, launch-ready MVP requires deep technical structure. I work closely with founders to pinpoint their technical hurdles, unblocking their workflows and establishing a solid foundation for rapid product iterations.",
@@ -54,7 +54,7 @@ export const profile = {
       period: '2025 — Present',
       company: 'Independent / Freelance',
       location: 'Ottawa, Canada',
-      title: 'Full-stack Engineer',
+      title: 'Software Engineer',
       summary:
         'Building SaaS products end to end for early-stage clients — architecture, implementation, and deployment.',
     },
@@ -63,7 +63,7 @@ export const profile = {
       company: 'StraitsX',
       url: 'https://www.straitsx.com/',
       location: 'Singapore',
-      title: 'Full-stack Engineer',
+      title: 'Software Engineer',
       summary:
         'Led a redesign of the core database schema that cut storage by 80% while making the system extensible to additional currencies and blockchains.',
     },

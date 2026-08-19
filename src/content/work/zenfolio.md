@@ -3,7 +3,7 @@ title: Zenfolio
 tagline: A unified portfolio dashboard across trading platforms — upload a screenshot of your trading history and an AI parser turns it into structured buy, sell and dividend records.
 category: fullstack-cloud-ai
 year: '2025'
-role: Solo — full-stack across two Go services and a React client
+role: Solo — software engineer across two Go services and a React client
 featured: true
 order: 4
 stack:

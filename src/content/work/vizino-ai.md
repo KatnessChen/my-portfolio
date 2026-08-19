@@ -3,7 +3,7 @@ title: Vizino AI
 tagline: An AI interior-design studio that replaces the chat window with a project workspace — upload a room photo, preview paint, texture and furnishing changes, and keep every prompt reusable.
 category: fullstack-cloud-ai
 year: '2025 — 2026'
-role: Solo — full-stack & cloud infrastructure
+role: Solo — software engineer & cloud infrastructure
 featured: true
 order: 5
 cover: vizino.ai.webp

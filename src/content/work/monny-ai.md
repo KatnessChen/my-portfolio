@@ -3,7 +3,7 @@ title: Monny AI
 tagline: A household cash-flow system that runs entirely on local hardware — rules parse what rules can parse, a locally-hosted LLM handles only what they can't, and no financial data ever leaves the network.
 category: fullstack-local-ai
 year: '2026'
-role: Solo — full-stack, data modelling & local AI
+role: Solo — software engineer, data modelling & local AI
 featured: true
 order: 2
 cover: monny-ai_01.webp
