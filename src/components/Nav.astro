@@ -1,0 +1,85 @@
+---
+import { profile } from '../data/profile';
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header class="nav">
+  <div class="container nav__inner">
+    <a class="nav__brand" href="/">{profile.shortName}</a>
+
+    <nav aria-label="Primary">
+      <ul class="nav__list">
+        <li><a href="/#work" class="nav__link">Work</a></li>
+        <li>
+          <a href="/about" class="nav__link" aria-current={isActive('/about') ? 'page' : undefined}>
+            About
+          </a>
+        </li>
+        <li>
+          <a href={profile.linkedin} class="nav__link" target="_blank" rel="noopener noreferrer">
+            LinkedIn <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--c-bg) 85%, transparent);
+    backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s var(--ease);
+  }
+  /* 捲動時才浮出 hairline */
+  @supports (animation-timeline: scroll()) {
+    .nav {
+      animation: nav-line linear both;
+      animation-timeline: scroll();
+      animation-range: 0 80px;
+    }
+    @keyframes nav-line {
+      to { border-bottom-color: var(--c-line); }
+    }
+  }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 68px;
+  }
+
+  .nav__brand {
+    font-family: var(--f-display);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .nav__brand:hover { color: var(--c-accent); }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 3vw, 2.25rem);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav__link {
+    font-size: var(--t-small);
+    color: var(--c-ink-muted);
+    transition: color 0.2s var(--ease);
+  }
+  .nav__link:hover,
+  .nav__link[aria-current='page'] { color: var(--c-ink); }
+  .nav__link span { font-size: 0.75em; }
+</style>

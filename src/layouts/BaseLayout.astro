@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { profile } from '../data/profile';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 相對路徑的 OG 圖，例如 /images/og-home.png */
+  ogImage?: string;
+  /** 首頁才輸出 Person JSON-LD */
+  isHome?: boolean;
+}
+
+const {
+  title,
+  description = profile.bioShort,
+  ogImage = '/og-default.png',
+  isHome = false,
+} = Astro.props;
+
+const siteName = `${profile.name} — ${profile.role.replace(/\.$/, '')}`;
+const pageTitle = title ? `${title} — ${profile.name}` : siteName;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site);
+const ogUrl = new URL(ogImage, Astro.site);
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  alternateName: profile.alias,
+  jobTitle: 'Software Engineer',
+  email: `mailto:${profile.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Ottawa', addressCountry: 'CA' },
+  url: Astro.site?.toString(),
+  sameAs: [profile.linkedin, profile.github],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    {isHome && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(personSchema)}
+      />
+    )}
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // 全站唯一的 JS：scroll reveal
+      const els = document.querySelectorAll('[data-reveal]');
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && els.length) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                (e.target as HTMLElement).classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.06 }
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>

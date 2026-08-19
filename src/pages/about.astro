@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Capabilities from '../components/Capabilities.astro';
+import { profile } from '../data/profile';
+---
+
+<BaseLayout title="About" description={profile.bioShort}>
+  <section class="ah">
+    <div class="container">
+      <div class="ah__top">
+        <img
+          class="ah__avatar"
+          src="/images/avatar.webp"
+          alt={`Photo of ${profile.name}`}
+          width="88"
+          height="88"
+          loading="eager"
+          decoding="async"
+        />
+        <p class="eyebrow">About</p>
+      </div>
+      <h1 class="ah__title">{profile.name}<span class="ah__alias"> ({profile.alias})</span></h1>
+      <p class="lead ah__loc">{profile.role} Based in {profile.location}.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="bio prose" data-reveal>
+        {profile.bioLong.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <SectionHeading eyebrow="Experience" title="Where I've worked." />
+
+      <ol class="tl">
+        {profile.experience.map((e) => (
+          <li class="tl__item" data-reveal>
+            <div class="tl__period">{e.period}</div>
+            <div class="tl__body">
+              <h3 class="tl__role">
+                {e.title} ·{' '}
+                {e.url ? (
+                  <a class="link" href={e.url} target="_blank" rel="noopener noreferrer">
+                    {e.company}
+                  </a>
+                ) : (
+                  e.company
+                )}
+              </h3>
+              <p class="tl__loc">{e.location}</p>
+              <p class="tl__summary">{e.summary}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <SectionHeading eyebrow="Capabilities" title="What I work with." />
+      <Capabilities />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <hr class="rule" />
+      <div class="cta" data-reveal>
+        <h2 class="cta__title">Let's talk.</h2>
+        <div class="cta__actions">
+          <a class="btn" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a class="btn btn--ghost" href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+            LinkedIn <span aria-hidden="true">↗</span>
+          </a>
+          {profile.resume && <a class="btn btn--ghost" href={profile.resume}>Résumé (PDF)</a>}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ah {
+    padding-top: clamp(3.5rem, 9vw, 7rem);
+    padding-bottom: clamp(1rem, 2vw, 2rem);
+  }
+
+  .ah__top {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  .ah__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--c-line);
+  }
+
+  .ah__title {
+    margin-top: 1rem;
+    font-size: var(--t-h1);
+    letter-spacing: var(--ls-display);
+    line-height: var(--lh-tight);
+  }
+  .ah__alias { color: var(--c-ink-faint); }
+  .ah__loc { margin-top: 1.5rem; max-width: 44rem; }
+
+  .bio p { margin-top: 1.5rem; color: var(--c-ink-muted); }
+  .bio p:first-child { margin-top: 0; }
+
+  /* ---- Timeline ---- */
+  .tl { list-style: none; padding: 0; margin: 0; }
+  .tl__item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding-block: clamp(1.75rem, 3vw, 2.5rem);
+    border-top: 1px solid var(--c-line);
+  }
+  .tl__item:last-child { border-bottom: 1px solid var(--c-line); }
+  @media (min-width: 760px) {
+    .tl__item { grid-template-columns: 160px minmax(0, 1fr); gap: 2rem; }
+  }
+  .tl__period {
+    font-size: var(--t-small);
+    color: var(--c-ink-faint);
+    letter-spacing: 0.02em;
+  }
+  .tl__role { font-size: var(--t-h3); }
+  .tl__loc {
+    margin-top: 0.375rem;
+    font-size: var(--t-small);
+    color: var(--c-ink-faint);
+  }
+  .tl__summary {
+    margin-top: 0.875rem;
+    color: var(--c-ink-muted);
+    max-width: 44rem;
+  }
+
+  /* ---- CTA ---- */
+  .cta { padding-top: clamp(2.5rem, 5vw, 4rem); }
+  .cta__title { font-size: var(--t-h1); letter-spacing: var(--ls-display); }
+  .cta__actions {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+  .cta__actions span { font-size: 0.8em; }
+</style>

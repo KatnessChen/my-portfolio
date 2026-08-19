@@ -1,0 +1,179 @@
+---
+import { categoryLabel, flatStack } from '../data/categories';
+import { workImageSize } from '../utils/imageSize';
+
+interface Props {
+  slug: string;
+  title: string;
+  tagline: string;
+  category: string;
+  year: string;
+  cover?: string;
+  coverAlt?: string;
+  stack: { frontend: string[]; backend: string[]; ai: string[]; infra: string[] };
+  index: number;
+}
+
+const { slug, title, tagline, category, year, cover, coverAlt, stack, index } = Astro.props;
+const tags = flatStack(stack).slice(0, 4);
+const num = String(index + 1).padStart(2, '0');
+const size = cover ? await workImageSize(cover) : null;
+---
+
+<article class="card">
+  <a class="card__link" href={`/work/${slug}`}>
+    <div class="card__media">
+      {cover ? (
+        <img
+          src={`/images/work/${cover}`}
+          alt={coverAlt ?? `${title} screenshot`}
+          width={size?.width}
+          height={size?.height}
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="card__placeholder" aria-hidden="true">
+          <span class="card__placeholder-num">{num}</span>
+          <span class="card__placeholder-title">{title}</span>
+        </div>
+      )}
+    </div>
+
+    <div class="card__body">
+      <div class="card__meta">
+        <span class="eyebrow">{categoryLabel[category] ?? category}</span>
+        <span class="card__year">{year}</span>
+      </div>
+
+      <h3 class="card__title">{title}</h3>
+      <p class="card__tagline">{tagline}</p>
+
+      {tags.length > 0 && (
+        <ul class="card__tags">
+          {tags.map((t) => <li>{t}</li>)}
+        </ul>
+      )}
+
+      <span class="card__cta">
+        Read case study <span aria-hidden="true">→</span>
+      </span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card { height: 100%; }
+
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card__media {
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--c-line);
+    background: var(--c-bg-soft);
+    aspect-ratio: 16 / 10;
+  }
+  .card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    transition: transform 0.7s var(--ease);
+  }
+  .card__link:hover .card__media img { transform: scale(1.02); }
+
+  .card__placeholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+  }
+  .card__placeholder-num {
+    font-family: var(--f-display);
+    font-size: var(--t-small);
+    color: var(--c-ink-faint);
+    letter-spacing: 0.04em;
+  }
+  .card__placeholder-title {
+    font-family: var(--f-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 500;
+    letter-spacing: var(--ls-display);
+    color: var(--c-line);
+    line-height: 1;
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-top: 1.5rem;
+  }
+
+  .card__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .card__year {
+    font-size: var(--t-micro);
+    color: var(--c-ink-faint);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .card__title {
+    margin-top: 1.125rem;
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    letter-spacing: var(--ls-display);
+    transition: color 0.2s var(--ease);
+  }
+  .card__link:hover .card__title { color: var(--c-accent); }
+
+  .card__tagline {
+    margin-top: 0.75rem;
+    font-size: var(--t-small);
+    line-height: 1.6;
+    color: var(--c-ink-muted);
+  }
+
+  .card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4375rem;
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0 0;
+  }
+  .card__tags li {
+    font-size: var(--t-micro);
+    color: var(--c-ink-muted);
+    padding: 0.25rem 0.5625rem;
+    border: 1px solid var(--c-line);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .card__cta {
+    display: inline-block;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    font-size: var(--t-small);
+    font-weight: 500;
+  }
+  .card__cta span {
+    display: inline-block;
+    transition: transform 0.3s var(--ease);
+  }
+  .card__link:hover .card__cta { color: var(--c-accent); }
+  .card__link:hover .card__cta span { transform: translateX(4px); }
+</style>

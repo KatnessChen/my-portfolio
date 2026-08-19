@@ -1,0 +1,217 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MetaBar from '../../components/MetaBar.astro';
+import StatRow from '../../components/StatRow.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+import { categoryLabel } from '../../data/categories';
+import { workImageSize } from '../../utils/imageSize';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+
+  return all.map((entry, i) => ({
+    params: { slug: entry.slug },
+    props: {
+      entry,
+      prev: i > 0 ? { slug: all[i - 1].slug, title: all[i - 1].data.title } : null,
+      next: i < all.length - 1 ? { slug: all[i + 1].slug, title: all[i + 1].data.title } : null,
+    },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await entry.render();
+const d = entry.data;
+
+const coverSize = d.cover ? await workImageSize(d.cover) : null;
+const gallerySizes = await Promise.all(d.gallery.map((g) => workImageSize(g.src)));
+
+const stackGroups = [
+  { label: 'Frontend', items: d.stack.frontend },
+  { label: 'Backend', items: d.stack.backend },
+  { label: 'AI', items: d.stack.ai },
+  { label: 'Infrastructure', items: d.stack.infra },
+].filter((g) => g.items.length > 0);
+---
+
+<BaseLayout title={d.title} description={d.tagline}>
+  <article>
+    <header class="ch">
+      <div class="container">
+        <p class="eyebrow">{categoryLabel[d.category] ?? d.category}</p>
+        <h1 class="ch__title">{d.title}</h1>
+        <p class="lead ch__tagline">{d.tagline}</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <MetaBar year={d.year} role={d.role} duration={d.duration} links={d.links} />
+
+      {d.cover && (
+        <figure class="ch__cover">
+          <img
+            src={`/images/work/${d.cover}`}
+            alt={d.coverAlt ?? `${d.title} interface`}
+            width={coverSize?.width}
+            height={coverSize?.height}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </figure>
+      )}
+
+      <StatRow highlights={d.highlights} />
+
+      <div class="body">
+        <div class="body__content prose">
+          <Content />
+        </div>
+
+        {stackGroups.length > 0 && (
+          <aside class="body__aside">
+            <div class="stackbox">
+              <p class="eyebrow">Stack</p>
+              {stackGroups.map((g) => (
+                <div class="stackbox__group">
+                  <h4 class="stackbox__label">{g.label}</h4>
+                  <ul class="stackbox__list">
+                    {g.items.map((i) => <li>{i}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </aside>
+        )}
+      </div>
+
+      {d.gallery.length > 0 && (
+        <div class="gallery">
+          {d.gallery.map((g, i) => (
+            <figure class="gallery__item" data-reveal>
+              <img
+                src={`/images/work/${g.src}`}
+                alt={g.alt}
+                width={gallerySizes[i]?.width}
+                height={gallerySizes[i]?.height}
+                loading="lazy"
+                decoding="async"
+              />
+              {g.caption && <figcaption>{g.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )}
+
+      <div class="ch__nav">
+        <ProjectNav prev={prev} next={next} />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .ch {
+    padding-top: clamp(3.5rem, 9vw, 7rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .ch__title {
+    margin-top: 1rem;
+    font-size: var(--t-h1);
+    font-weight: 500;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-display);
+  }
+  .ch__tagline { margin-top: 1.5rem; max-width: 46rem; }
+
+  .ch__cover {
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    padding-bottom: clamp(3.5rem, 7vw, 6rem);
+  }
+  @media (min-width: 940px) {
+    .body { grid-template-columns: minmax(0, 1fr) 240px; }
+    .body__aside { position: sticky; top: 100px; align-self: start; }
+  }
+
+  .stackbox { border-top: 1px solid var(--c-line); padding-top: 1.25rem; }
+  .stackbox__group { margin-top: 1.5rem; }
+  .stackbox__label {
+    font-family: var(--f-body);
+    font-size: var(--t-small);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .stackbox__list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 0.3125rem;
+  }
+  .stackbox__list li { font-size: var(--t-small); color: var(--c-ink-muted); }
+
+  .gallery {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    padding-bottom: clamp(3.5rem, 7vw, 6rem);
+  }
+  .gallery__item { margin: 0; }
+  .gallery__item img {
+    width: 100%;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+  }
+  .gallery__item figcaption {
+    margin-top: 0.75rem;
+    font-size: var(--t-small);
+    color: var(--c-ink-faint);
+  }
+
+  .ch__nav { padding-bottom: clamp(3rem, 6vw, 5rem); }
+</style>
+
+<style is:global>
+  .body__content > h2 {
+    font-size: var(--t-h2);
+    letter-spacing: var(--ls-display);
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--c-line);
+  }
+  .body__content > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+  .body__content > h3 { font-size: var(--t-h3); margin-top: 2.75rem; }
+  .body__content > p { margin-top: 1.25rem; color: var(--c-ink-muted); }
+  .body__content > h2 + p,
+  .body__content > h3 + p { margin-top: 1rem; }
+  .body__content strong { color: var(--c-ink); font-weight: 600; }
+  .body__content a {
+    color: inherit;
+    border-bottom: 1px solid var(--c-line);
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .body__content a:hover { color: var(--c-accent); border-color: var(--c-accent); }
+  .body__content ul, .body__content ol {
+    margin-top: 1.25rem; padding-left: 1.25rem; color: var(--c-ink-muted);
+  }
+  .body__content li { margin-top: 0.5rem; }
+  .body__content code {
+    font-size: 0.9em;
+    padding: 0.125em 0.375em;
+    background: var(--c-bg-soft);
+    border: 1px solid var(--c-line-soft);
+    border-radius: 4px;
+  }
+  .body__content pre {
+    margin-top: 1.5rem; padding: 1.25rem; overflow-x: auto;
+    border: 1px solid var(--c-line); border-radius: var(--radius);
+    font-size: var(--t-small);
+  }
+  .body__content pre code { background: none; border: 0; padding: 0; }
+</style>

@@ -1,0 +1,68 @@
+---
+interface Props {
+  year: string;
+  role: string;
+  duration?: string;
+  links?: { live?: string; github?: string };
+}
+const { year, role, duration, links = {} } = Astro.props;
+
+const items = [
+  { label: 'Year', value: year },
+  { label: 'Role', value: role },
+  ...(duration && duration !== 'TODO' ? [{ label: 'Duration', value: duration }] : []),
+];
+---
+
+<div class="meta">
+  <dl class="meta__list">
+    {items.map((i) => (
+      <div class="meta__item">
+        <dt class="eyebrow">{i.label}</dt>
+        <dd class="meta__value">{i.value}</dd>
+      </div>
+    ))}
+  </dl>
+
+  {(links.live || links.github) && (
+    <div class="meta__links">
+      {links.live && (
+        <a class="btn" href={links.live} target="_blank" rel="noopener noreferrer">
+          Visit site <span aria-hidden="true">↗</span>
+        </a>
+      )}
+      {links.github && (
+        <a class="btn btn--ghost" href={links.github} target="_blank" rel="noopener noreferrer">
+          GitHub <span aria-hidden="true">↗</span>
+        </a>
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--c-line);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .meta__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem clamp(2rem, 5vw, 4rem);
+    margin: 0;
+  }
+  .meta__item > dt { margin-bottom: 0.4375rem; }
+  .meta__value {
+    margin: 0;
+    font-size: var(--t-small);
+    font-weight: 500;
+  }
+  .meta__links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .meta__links span { font-size: 0.8em; }
+</style>

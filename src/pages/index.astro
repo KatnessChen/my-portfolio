@@ -1,0 +1,154 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WorkCard from '../components/WorkCard.astro';
+import Carousel from '../components/Carousel.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Capabilities from '../components/Capabilities.astro';
+import { profile } from '../data/profile';
+
+const work = (await getCollection('work'))
+  .filter((e) => e.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout isHome>
+  <!-- ============ Hero ============ -->
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow hero__eyebrow">
+        {profile.name} ({profile.alias}) — {profile.location}
+      </p>
+
+      <h1 class="hero__title">{profile.role}</h1>
+
+      <p class="lead hero__bio">{profile.bioShort}</p>
+
+      <div class="hero__actions">
+        <a class="btn" href="#work">View selected work</a>
+        <a
+          class="btn btn--ghost"
+          href={profile.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Selected work ============ -->
+  <section class="section section--bleed" id="work">
+    <div class="container">
+      <SectionHeading eyebrow="Selected work" title="Five products, built end to end." />
+    </div>
+
+    <Carousel label="Selected work" count={work.length}>
+      {work.map((entry, i) => (
+        <li>
+          <WorkCard
+            slug={entry.slug}
+            title={entry.data.title}
+            tagline={entry.data.tagline}
+            category={entry.data.category}
+            year={entry.data.year}
+            cover={entry.data.cover}
+            coverAlt={entry.data.coverAlt}
+            stack={entry.data.stack}
+            index={i}
+          />
+        </li>
+      ))}
+    </Carousel>
+  </section>
+
+  <!-- ============ Capabilities ============ -->
+  <section class="section section--tight">
+    <div class="container">
+      <SectionHeading eyebrow="Capabilities" title="What I work with." />
+      <Capabilities />
+    </div>
+  </section>
+
+  <!-- ============ Contact ============ -->
+  <section class="section contact">
+    <div class="container">
+      <hr class="rule" />
+      <div class="contact__inner" data-reveal>
+        <p class="eyebrow">Contact</p>
+        <h2 class="contact__title">
+          Currently building my own SaaS — and open to talking about interesting work.
+        </h2>
+        <div class="contact__actions">
+          <a class="btn" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a
+            class="btn btn--ghost"
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn <span aria-hidden="true">↗</span>
+          </a>
+          <a
+            class="btn btn--ghost"
+            href={profile.github}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---- Hero ---- */
+  .hero {
+    padding-top: clamp(4rem, 11vw, 9rem);
+    padding-bottom: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .hero__eyebrow { margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+
+  .hero__title {
+    font-size: var(--t-hero);
+    font-weight: 500;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-display);
+    /* 22ch：讓 "building AI-integrated" 保持同一行，不斷在連字號上 */
+    max-width: 22ch;
+  }
+
+  .hero__bio {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+    max-width: 46rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+  }
+  .hero__actions span { font-size: 0.8em; }
+
+  .section--bleed { overflow: hidden; }
+
+  /* ---- Contact ---- */
+  .contact__inner { padding-top: clamp(2.5rem, 5vw, 4rem); }
+  .contact__title {
+    margin-top: 1.25rem;
+    font-size: var(--t-h1);
+    letter-spacing: var(--ls-display);
+    max-width: 20ch;
+  }
+  .contact__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+  }
+  .contact__actions span { font-size: 0.8em; }
+</style>

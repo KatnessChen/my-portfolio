@@ -1,0 +1,111 @@
+---
+/**
+ * 三欄「面板」呈現技能，取代原本看起來像 footer 的清單。
+ * chip 用等寬字體 + 狀態點，維持全站僅一色強調色、無漸層/陰影的原則。
+ */
+import { profile } from '../data/profile';
+---
+
+<div class="caps">
+  {profile.capabilities.map((c, i) => (
+    <div class="caps__panel" data-reveal>
+      <div class="caps__head">
+        <span class="caps__index">{String(i + 1).padStart(2, '0')}</span>
+        <h3 class="caps__title">{c.title}</h3>
+        <span class="caps__count">{String(c.items.length).padStart(2, '0')}</span>
+      </div>
+      <ul class="caps__chips">
+        {c.items.map((item) => (
+          <li class="chip">
+            <span class="chip__dot" aria-hidden="true"></span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
+
+<style>
+  .caps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .caps__panel {
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    transition: border-color 0.3s var(--ease);
+  }
+  .caps__panel:hover { border-color: var(--c-ink-faint); }
+
+  .caps__head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    padding-bottom: 1.125rem;
+    margin-bottom: 1.375rem;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .caps__index {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+    font-size: var(--t-micro);
+    color: var(--c-ink-faint);
+    letter-spacing: 0.02em;
+  }
+
+  .caps__title {
+    flex: 1;
+    font-size: var(--t-h3);
+  }
+
+  .caps__count {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+    font-size: var(--t-micro);
+    color: var(--c-ink-faint);
+  }
+  .caps__count::before { content: '['; }
+  .caps__count::after { content: ']'; }
+
+  .caps__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    padding: 0.3125rem 0.625rem 0.3125rem 0.5rem;
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.01em;
+    color: var(--c-ink-muted);
+    background: var(--c-bg);
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .chip:hover {
+    border-color: var(--c-accent);
+    color: var(--c-ink);
+    background: var(--c-bg-soft);
+  }
+
+  .chip__dot {
+    width: 5px;
+    height: 5px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--c-ink-faint);
+    transition: background 0.2s var(--ease);
+  }
+  .chip:hover .chip__dot { background: var(--c-accent); }
+</style>

@@ -1,0 +1,60 @@
+---
+import { profile } from '../data/profile';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <hr class="rule" />
+    <div class="footer__inner">
+      <p class="footer__meta">
+        © {year} {profile.name} · {profile.location}
+      </p>
+      <ul class="footer__links">
+        <li><a class="footer__link" href={`mailto:${profile.email}`}>Email</a></li>
+        <li>
+          <a class="footer__link" href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+            LinkedIn
+          </a>
+        </li>
+        <li>
+          <a class="footer__link" href={profile.github} target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        </li>
+        {profile.resume && (
+          <li><a class="footer__link" href={profile.resume}>Résumé</a></li>
+        )}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { padding-bottom: 3.5rem; }
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding-top: 2rem;
+  }
+  .footer__meta {
+    font-size: var(--t-small);
+    color: var(--c-ink-faint);
+  }
+  .footer__links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer__link {
+    font-size: var(--t-small);
+    color: var(--c-ink-muted);
+    transition: color 0.2s var(--ease);
+  }
+  .footer__link:hover { color: var(--c-accent); }
+</style>

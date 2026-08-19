@@ -1,0 +1,40 @@
+---
+interface Props {
+  highlights: { label: string; value: string }[];
+}
+const { highlights } = Astro.props;
+---
+
+{highlights.length > 0 && (
+  <dl class="stats" data-reveal>
+    {highlights.map((h) => (
+      <div class="stats__item">
+        <dd class="stats__value">{h.value}</dd>
+        <dt class="stats__label">{h.label}</dt>
+      </div>
+    ))}
+  </dl>
+)}
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+    padding-block: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .stats__value {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: clamp(1.875rem, 3.5vw, 2.75rem);
+    font-weight: 500;
+    letter-spacing: var(--ls-display);
+    line-height: 1;
+  }
+  .stats__label {
+    margin-top: 0.625rem;
+    font-size: var(--t-small);
+    color: var(--c-ink-muted);
+  }
+</style>

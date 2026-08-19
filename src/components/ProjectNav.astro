@@ -1,0 +1,48 @@
+---
+interface Props {
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
+}
+const { prev, next } = Astro.props;
+---
+
+{(prev || next) && (
+  <nav class="pnav" aria-label="Project navigation">
+    <div class="pnav__side">
+      {prev && (
+        <a class="pnav__link" href={`/work/${prev.slug}`}>
+          <span class="eyebrow">Previous</span>
+          <span class="pnav__title">{prev.title}</span>
+        </a>
+      )}
+    </div>
+    <div class="pnav__side pnav__side--end">
+      {next && (
+        <a class="pnav__link pnav__link--end" href={`/work/${next.slug}`}>
+          <span class="eyebrow">Next</span>
+          <span class="pnav__title">{next.title}</span>
+        </a>
+      )}
+    </div>
+  </nav>
+)}
+
+<style>
+  .pnav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding-top: 2.25rem;
+    border-top: 1px solid var(--c-line);
+  }
+  .pnav__side--end { text-align: right; }
+  .pnav__link { display: inline-flex; flex-direction: column; gap: 0.5rem; }
+  .pnav__title {
+    font-family: var(--f-display);
+    font-size: var(--t-h3);
+    font-weight: 500;
+    letter-spacing: var(--ls-h);
+    transition: color 0.2s var(--ease);
+  }
+  .pnav__link:hover .pnav__title { color: var(--c-accent); }
+</style>

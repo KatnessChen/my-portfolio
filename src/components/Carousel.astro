@@ -1,0 +1,226 @@
+---
+/**
+ * 水平 scroll-snap carousel。
+ * 無 JS 時仍可用原生捲動（含觸控）；JS 只負責上/下一張按鈕、計數器與進度條。
+ */
+interface Props {
+  label: string;
+  count: number;
+}
+const { label, count } = Astro.props;
+const total = String(count).padStart(2, '0');
+---
+
+<div class="car" data-carousel data-reveal>
+  <div class="container car__bar">
+    <p class="car__counter" aria-hidden="true">
+      <span data-carousel-current>01</span><span class="car__sep">/</span>{total}
+    </p>
+
+    <div class="car__buttons">
+      <button type="button" class="car__btn" data-carousel-prev aria-label={`Previous — ${label}`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <button type="button" class="car__btn" data-carousel-next aria-label={`Next — ${label}`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="car__viewport"
+    data-carousel-viewport
+    role="region"
+    aria-label={label}
+    tabindex="0"
+  >
+    <ul class="car__track" role="list">
+      <slot />
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="car__progress" aria-hidden="true">
+      <span class="car__progress-thumb" data-carousel-thumb></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .car {
+    /* 讓第一張卡片對齊 container 左緣，但軌道本身可以滿版延伸出去 */
+    --car-pad: max(var(--s-gutter), calc((100% - var(--w-max)) / 2 + var(--s-gutter)));
+    --car-gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  /* ---- 標頭列：計數器 + 按鈕 ---- */
+  .car__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .car__counter {
+    font-family: var(--f-display);
+    font-size: var(--t-small);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--c-ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .car__counter [data-carousel-current] { color: var(--c-ink); }
+  .car__sep { margin-inline: 0.375rem; }
+
+  .car__buttons { display: flex; gap: 0.5rem; }
+
+  .car__btn {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--c-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--c-ink);
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease),
+                background 0.2s var(--ease), opacity 0.2s var(--ease);
+  }
+  .car__btn svg { width: 18px; height: 18px; }
+  .car__btn:hover:not(:disabled) {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+    background: var(--c-bg-soft);
+  }
+  .car__btn:disabled { opacity: 0.28; cursor: default; }
+
+  /* ---- 軌道 ---- */
+  .car__viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-inline-start: var(--car-pad);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* 焦點框不要被 overflow 裁掉 */
+    padding-block: 4px;
+  }
+  .car__viewport::-webkit-scrollbar { display: none; }
+  .car__viewport:focus-visible { outline-offset: -2px; }
+
+  .car__track {
+    display: flex;
+    gap: var(--car-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0 var(--car-pad);
+  }
+
+  /* slot 進來的 <li> */
+  .car__track > :global(li) {
+    flex: 0 0 clamp(16.5rem, 82vw, 22rem);
+    scroll-snap-align: start;
+  }
+  @media (min-width: 700px) {
+    .car__track > :global(li) { flex-basis: clamp(20rem, 42vw, 25rem); }
+  }
+  @media (min-width: 1100px) {
+    .car__track > :global(li) { flex-basis: clamp(22rem, 30vw, 27rem); }
+  }
+
+  /* ---- 進度條 ---- */
+  .car__progress {
+    position: relative;
+    height: 1px;
+    margin-top: 2.5rem;
+    background: var(--c-line);
+  }
+  .car__progress-thumb {
+    position: absolute;
+    inset-block: -1px;
+    left: 0;
+    width: 20%;
+    background: var(--c-ink);
+    transition: transform 0.3s var(--ease), width 0.3s var(--ease);
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .car__viewport { scroll-behavior: auto; }
+    .car__progress-thumb { transition: none; }
+  }
+</style>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const viewport = root.querySelector<HTMLElement>('[data-carousel-viewport]');
+    const track = viewport?.querySelector<HTMLElement>('.car__track');
+    const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
+    const current = root.querySelector<HTMLElement>('[data-carousel-current]');
+    const thumb = root.querySelector<HTMLElement>('[data-carousel-thumb]');
+    if (!viewport || !track) continue;
+
+    const slides = () => Array.from(track.children) as HTMLElement[];
+
+    /** 一張卡片 + 間距的寬度 */
+    const step = () => {
+      const s = slides();
+      if (s.length < 2) return s[0]?.offsetWidth ?? 0;
+      return s[1].offsetLeft - s[0].offsetLeft;
+    };
+
+    const maxScroll = () => viewport.scrollWidth - viewport.clientWidth;
+
+    function update() {
+      const max = maxScroll();
+      const x = viewport.scrollLeft;
+      const st = step();
+      const index = st > 0 ? Math.round(x / st) : 0;
+      const count = slides().length;
+
+      if (current) current.textContent = String(Math.min(index + 1, count)).padStart(2, '0');
+
+      // 容一點誤差，避免 subpixel 導致按鈕永遠不 disabled
+      if (prev) prev.disabled = x <= 1;
+      if (next) next.disabled = x >= max - 1;
+
+      if (thumb) {
+        const visible = max > 0 ? viewport.clientWidth / viewport.scrollWidth : 1;
+        const progress = max > 0 ? x / max : 0;
+        thumb.style.width = `${Math.max(visible, 0.08) * 100}%`;
+        thumb.style.transform = `translateX(${(progress * (1 / Math.max(visible, 0.08) - 1)) * 100}%)`;
+      }
+    }
+
+    prev?.addEventListener('click', () => viewport.scrollBy({ left: -step() }));
+    next?.addEventListener('click', () => viewport.scrollBy({ left: step() }));
+
+    let ticking = false;
+    viewport.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      },
+      { passive: true }
+    );
+
+    window.addEventListener('resize', update);
+    update();
+  }
+</script>

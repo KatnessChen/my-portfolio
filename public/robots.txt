@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yuwen-chen.vercel.app/sitemap-index.xml

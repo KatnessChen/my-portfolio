@@ -1,0 +1,24 @@
+---
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  id?: string;
+}
+const { eyebrow, title, id } = Astro.props;
+---
+
+<div class="sh" id={id} data-reveal>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  {title && <h2 class="sh__title">{title}</h2>}
+  <slot />
+</div>
+
+<style>
+  .sh { margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+  .sh__title {
+    margin-top: 1rem;
+    font-size: var(--t-h2);
+    letter-spacing: var(--ls-display);
+    max-width: 22ch;
+  }
+</style>
