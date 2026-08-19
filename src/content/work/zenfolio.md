@@ -5,7 +5,7 @@ category: fullstack-cloud-ai
 year: '2025'
 role: Solo — full-stack across two Go services and a React client
 featured: true
-order: 5
+order: 4
 stack:
   frontend: ['React', 'TypeScript', 'Vite', 'Redux Toolkit', 'Tailwind CSS', 'shadcn/ui', 'Storybook']
   backend: ['Go', 'Gin', 'GORM', 'MySQL 8.0', 'Redis']

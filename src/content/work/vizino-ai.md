@@ -5,7 +5,7 @@ category: fullstack-cloud-ai
 year: '2025 — 2026'
 role: Solo — full-stack & cloud infrastructure
 featured: true
-order: 2
+order: 5
 cover: vizino.ai.webp
 coverAlt: >-
   The Vizino AI workspace: a Recolor design goal in the left rail, an uploaded room

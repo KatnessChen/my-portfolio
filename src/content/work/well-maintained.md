@@ -5,7 +5,7 @@ category: static
 year: '2026'
 role: Solo — design & build
 featured: true
-order: 4
+order: 3
 stack:
   frontend: ['Astro 4', 'TypeScript', 'Hand-written CSS']
   backend: []

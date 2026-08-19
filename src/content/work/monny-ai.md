@@ -5,7 +5,7 @@ category: fullstack-local-ai
 year: '2026'
 role: Solo — full-stack, data modelling & local AI
 featured: true
-order: 3
+order: 2
 cover: monny-ai_01.webp
 coverAlt: >-
   Monny AI's monthly report: net cash flow, a day-by-day inflow/outflow bar chart,
