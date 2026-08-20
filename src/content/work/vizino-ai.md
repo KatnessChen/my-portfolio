@@ -17,8 +17,10 @@ stack:
   ai: ['Google Vertex AI', 'Gemini (@google/genai)']
   infra: ['Google Cloud Run', 'Docker', 'Google Container Registry', 'Vercel']
 links: {}
-# TODO 填真實數據：使用者數、產圖數、單張成本、平均延遲
-highlights: []
+highlights:
+  - { label: Deploy environments, value: 'Dev + Prod' }
+  - { label: Identity, value: 'Google OAuth' }
+  - { label: Deployment, value: 'Containerized' }
 gallery: []
 draft: true
 ---
