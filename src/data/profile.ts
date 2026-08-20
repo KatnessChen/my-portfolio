@@ -1,3 +1,50 @@
+interface Experience {
+  period: string;
+  company: string;
+  url?: string;
+  location: string;
+  title: string;
+  summary: string;
+}
+
+const experience: Experience[] = [
+  {
+    period: 'Apr — Jun 2026',
+    company: 'Invest Ottawa',
+    url: 'https://www.investottawa.ca/',
+    location: 'Ottawa, Canada',
+    title: 'Entrepreneurship Program Participant',
+    summary:
+      'Completed a program on entrepreneurship fundamentals — validating ideas, business models, and go-to-market — as part of the shift from engineering into founding a SaaS company.',
+  },
+  {
+    period: '2025 — Present',
+    company: 'Independent / Freelance',
+    location: 'Ottawa, Canada',
+    title: 'Software Engineer',
+    summary:
+      'Building SaaS products end to end for early-stage clients — architecture, implementation, and deployment.',
+  },
+  {
+    period: '2022 — 2024',
+    company: 'StraitsX',
+    url: 'https://www.straitsx.com/',
+    location: 'Singapore (Remote)',
+    title: 'Software Engineer',
+    summary:
+      'Led a redesign of the core database schema that cut storage by 80% while making the system extensible to additional currencies and blockchains.',
+  },
+  {
+    period: '2020 — 2022',
+    company: 'Synergies Intelligent Systems',
+    url: 'https://www.linkedin.com/company/synergies-intelligent-systems-inc/',
+    location: 'Taiwan',
+    title: 'Frontend Engineer',
+    summary:
+      'Built a natural-language input interface and the data-visualisation layer for an industrial analytics platform.',
+  },
+];
+
 export const profile = {
   name: 'Yu-Wen Chen',
   alias: 'Katness',
@@ -38,43 +85,7 @@ export const profile = {
     },
   ],
 
-  experience: [
-    {
-      period: 'Apr — Jun 2026',
-      company: 'Invest Ottawa',
-      url: 'https://www.investottawa.ca/',
-      location: 'Ottawa, Canada',
-      title: 'Entrepreneurship Program Participant',
-      summary:
-        'Completed a program on entrepreneurship fundamentals — validating ideas, business models, and go-to-market — as part of the shift from engineering into founding a SaaS company.',
-    },
-    {
-      period: '2025 — Present',
-      company: 'Independent / Freelance',
-      location: 'Ottawa, Canada',
-      title: 'Software Engineer',
-      summary:
-        'Building SaaS products end to end for early-stage clients — architecture, implementation, and deployment.',
-    },
-    {
-      period: '2022 — 2024',
-      company: 'StraitsX',
-      url: 'https://www.straitsx.com/',
-      location: 'Singapore (Remote)',
-      title: 'Software Engineer',
-      summary:
-        'Led a redesign of the core database schema that cut storage by 80% while making the system extensible to additional currencies and blockchains.',
-    },
-    {
-      period: '2020 — 2022',
-      company: 'Synergies Intelligent Systems',
-      url: 'https://www.linkedin.com/company/synergies-intelligent-systems-inc/',
-      location: 'Taiwan',
-      title: 'Frontend Engineer',
-      summary:
-        'Built a natural-language input interface and the data-visualisation layer for an industrial analytics platform.',
-    },
-  ],
+  experience,
 } as const;
 
 export type Profile = typeof profile;
