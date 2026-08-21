@@ -61,13 +61,13 @@ export const profile = {
   resume: null as string | null,
 
   bioShort:
-    "We're a software engineering team based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, we've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. We partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
+    "I am a software engineering based in Ottawa. Over six years at startups in Taiwan and Singapore, plus two years freelancing, I've taken SaaS products from nothing to MVP and out the door — across web frontend, backend, databases, and AI integration. I am looking to partner with non-technical founders to bridge the final mile of development, transforming their vibe-coded prototypes into highly robust, launch-ready MVPs that can scale and iterate rapidly.",
 
   bioLong: [
-    "We're a software engineering team based in Ottawa, Canada. We spent six years at startups in Taiwan and Singapore, followed by two years of freelancing — most of it on SaaS products taken from a blank repository to a shipped MVP.",
-    "Our work sits across the whole stack: interfaces in React and Vue, services in Nest.js and Node.js, relational and document data models, and deployments on GCP and AWS. The thread running through it is that we like owning a feature end to end, from the data model up to the pixel.",
+    "I am a software engineering based in Ottawa, Canada. I spent six years at startups in Taiwan and Singapore, followed by two years of freelancing — most of it on SaaS products taken from a blank repository to a shipped MVP.",
+    "My work sits across the whole stack: interfaces in React and Vue, services in Nest.js and Node.js, relational and document data models, and deployments on GCP and AWS. The thread running through it is that I like owning a feature end to end, from the data model up to the pixel.",
     "More recently that has extended into integrating AI into products — both cloud-hosted models and locally-run ones — which is what most of the work below is about.",
-    "Today, we focus on collaborating with non-technical founders. While AI allows almost anyone to 'vibe-code' an incredible initial proof-of-concept, taking a product across the finish line to become a truly workable, launch-ready MVP requires deep technical structure. We work closely with founders to pinpoint their technical hurdles, unblocking their workflows and establishing a solid foundation for rapid product iterations.",
+    "Today, I focus on collaborating with non-technical founders. While AI allows almost anyone to 'vibe-code' an incredible initial proof-of-concept, taking a product across the finish line to become a truly workable, launch-ready MVP requires deep technical structure. I work closely with founders to pinpoint their technical hurdles, unblocking their workflows and establishing a solid foundation for rapid product iterations.",
   ],
 
   capabilities: [
