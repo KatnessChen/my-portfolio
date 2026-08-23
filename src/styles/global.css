@@ -11,6 +11,13 @@
   pointer-events: none;
 }
 
+/* Off on mobile — plain white background instead. */
+@media (max-width: 640px) {
+  .nebula-bg-container {
+    display: none;
+  }
+}
+
 .nebula-blob {
   position: absolute;
   border-radius: 50%;
