@@ -14,17 +14,15 @@
 .nebula-blob {
   position: absolute;
   border-radius: 50%;
+  /* Softness is baked into each gradient's own alpha curve (see below), not just
+     this filter — filter: blur() renders at inconsistent quality/radius across
+     GPU compositors (mobile engines especially use cheaper blur approximations),
+     so a design that relies on blur alone to dilute a strong color looks
+     noticeably more saturated wherever the blur happens to render weaker. */
   filter: blur(80px);
   opacity: 1;
   mix-blend-mode: normal;
   will-change: transform;
-}
-
-@media (prefers-color-scheme: dark) {
-  .nebula-blob {
-    mix-blend-mode: screen;
-    opacity: 0.3;
-  }
 }
 
 .nebula-1 {
@@ -32,7 +30,13 @@
   left: 5%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.7) 0%, rgba(16, 185, 129, 0.35) 50%, rgba(16, 185, 129, 0) 100%);
+  /* Plain fallback first, explicit sRGB interpolation second: browsers that
+     don't parse "in srgb" ignore that declaration and keep the fallback above
+     it, rather than the whole background failing. Pinning the interpolation
+     space stops different engines from computing the gradient's in-between
+     colors differently. */
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.32) 0%, rgba(16, 185, 129, 0.15) 45%, rgba(16, 185, 129, 0) 100%);
+  background: radial-gradient(in srgb circle, rgba(16, 185, 129, 0.32) 0%, rgba(16, 185, 129, 0.15) 45%, rgba(16, 185, 129, 0) 100%);
 }
 
 .nebula-2 {
@@ -40,7 +44,8 @@
   right: 5%;
   width: 550px;
   height: 550px;
-  background: radial-gradient(circle, rgba(147, 51, 234, 0.65) 0%, rgba(147, 51, 234, 0.3) 50%, rgba(147, 51, 234, 0) 100%);
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.28) 0%, rgba(147, 51, 234, 0.13) 45%, rgba(147, 51, 234, 0) 100%);
+  background: radial-gradient(in srgb circle, rgba(147, 51, 234, 0.28) 0%, rgba(147, 51, 234, 0.13) 45%, rgba(147, 51, 234, 0) 100%);
 }
 
 .nebula-3 {
@@ -48,7 +53,8 @@
   left: 25%;
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, rgba(59, 130, 246, 0.28) 50%, rgba(59, 130, 246, 0) 100%);
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.26) 0%, rgba(59, 130, 246, 0.12) 45%, rgba(59, 130, 246, 0) 100%);
+  background: radial-gradient(in srgb circle, rgba(59, 130, 246, 0.26) 0%, rgba(59, 130, 246, 0.12) 45%, rgba(59, 130, 246, 0) 100%);
   animation: float-slow 22s ease-in-out infinite alternate;
 }
 
