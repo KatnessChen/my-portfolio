@@ -35,7 +35,11 @@ const wordCount = post.body ? post.body.trim().split(/\s+/).filter(Boolean).leng
 const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 ---
 
-<BaseLayout title={post.data.title} description={post.data.excerpt}>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.excerpt}
+  ogImage={post.data.cover ? `/images/blog/${post.data.cover}` : undefined}
+>
   <div class="reading-progress" aria-hidden="true">
     <div class="reading-progress__bar" id="reading-progress-bar"></div>
   </div>
