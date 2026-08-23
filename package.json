@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "blog:pull": "node scripts/blog-pull.mjs",
+    "blog:push": "node scripts/blog-push.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
@@ -15,10 +17,12 @@
     "@fontsource-variable/inter-tight": "^5.1.0",
     "@vercel/analytics": "^2.0.1",
     "astro": "^5.1.1",
+    "better-sqlite3": "^13.0.3",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/better-sqlite3": "^9.6.0",
     "typescript": "^5.9.3"
   }
 }

@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const sorted = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Blog" description="Thoughts on engineering, code quality, and building better software.">
+  <main class="blog-main">
+    <div class="container">
+      <header class="blog-header">
+        <h1>Blog</h1>
+        <p class="blog-tagline">Thoughts on engineering, code quality, and building better software.</p>
+      </header>
+
+      {sorted.length === 0 ? (
+        <p class="blog-empty">No posts yet.</p>
+      ) : (
+        <div class="blog-grid">
+          {sorted.map((post) => (
+            <BlogCard
+              title={post.data.title}
+              date={post.data.date}
+              excerpt={post.data.excerpt}
+              slug={post.id}
+              cover={post.data.cover}
+              coverAlt={post.data.coverAlt}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-main {
+    min-height: 100vh;
+    padding: 4rem 0;
+  }
+
+  .blog-header {
+    margin-bottom: 3rem;
+  }
+
+  .blog-header h1 {
+    margin: 0 0 1rem 0;
+    font-family: var(--f-display);
+    font-size: var(--t-h2);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .blog-tagline {
+    margin: 0;
+    font-size: 1.125rem;
+    color: var(--c-ink-muted);
+    line-height: 1.5;
+    max-width: 600px;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .blog-empty {
+    color: var(--c-ink-muted);
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .blog-main {
+      padding: 2rem 0;
+    }
+
+    .blog-header {
+      margin-bottom: 2rem;
+    }
+
+    .blog-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+</style>

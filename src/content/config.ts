@@ -1,4 +1,5 @@
 import { defineCollection, z } from 'astro:content';
+import { sqliteBlogLoader } from './loaders/sqlite-blog';
 
 const work = defineCollection({
   type: 'content',
@@ -33,4 +34,17 @@ const work = defineCollection({
   }),
 });
 
-export const collections = { work };
+const blog = defineCollection({
+  loader: sqliteBlogLoader({ dbPath: 'db/blog.sqlite3' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.date(),
+    updatedAt: z.date().optional(),
+    excerpt: z.string(),
+    cover: z.string().optional(),
+    coverAlt: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { work, blog };

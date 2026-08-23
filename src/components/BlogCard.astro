@@ -1,0 +1,107 @@
+---
+interface Props {
+  title: string;
+  date: Date;
+  excerpt: string;
+  slug: string;
+  cover?: string;
+  coverAlt?: string;
+}
+
+const { title, date, excerpt, slug, cover, coverAlt } = Astro.props;
+
+const formatted = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}).format(date);
+
+// Date-only (no time/offset), so the machine-readable value can't drift a day
+// from the human-readable text depending on the reader's timezone.
+const dateOnlyISO = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+---
+
+<article class="blog-card">
+  <a href={`/blog/${slug}`} class="blog-card__link">
+    {cover && (
+      <div class="blog-card__media">
+        <img src={`/images/blog/${cover}`} alt={coverAlt ?? ''} loading="lazy" decoding="async" />
+      </div>
+    )}
+    <div class="blog-card__content">
+      <h3 class="blog-card__title">{title}</h3>
+      <p class="blog-card__excerpt">{excerpt}</p>
+      <time class="blog-card__date" datetime={dateOnlyISO}>
+        {formatted}
+      </time>
+    </div>
+  </a>
+</article>
+
+<style>
+  .blog-card {
+    border: 1px solid var(--c-line);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: all 0.3s var(--ease);
+  }
+
+  .blog-card:hover {
+    border-color: var(--c-accent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .blog-card__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-card__media {
+    aspect-ratio: 1200 / 630;
+    overflow: hidden;
+    background: var(--c-bg-soft);
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .blog-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .blog-card:hover .blog-card__media img {
+    transform: scale(1.02);
+  }
+
+  .blog-card__content {
+    padding: 1.5rem;
+  }
+
+  .blog-card__title {
+    margin: 0 0 0.75rem 0;
+    font-family: var(--f-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+
+  .blog-card:hover .blog-card__title {
+    color: var(--c-accent);
+  }
+
+  .blog-card__excerpt {
+    margin: 0 0 1rem 0;
+    font-size: 0.9875rem;
+    line-height: 1.6;
+    color: var(--c-ink-muted);
+  }
+
+  .blog-card__date {
+    font-size: 0.8125rem;
+    color: var(--c-ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

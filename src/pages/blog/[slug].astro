@@ -1,0 +1,305 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { profile } from '../../data/profile';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: any;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const formatted = dateFormatter.format(post.data.date);
+const formattedUpdated = post.data.updatedAt ? dateFormatter.format(post.data.updatedAt) : null;
+
+// Date-only (no time/offset), so the machine-readable value can't drift a day
+// from the human-readable text depending on the reader's timezone.
+const toDateOnlyISO = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+const wordCount = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
+---
+
+<BaseLayout title={post.data.title} description={post.data.excerpt}>
+  <div class="reading-progress" aria-hidden="true">
+    <div class="reading-progress__bar" id="reading-progress-bar"></div>
+  </div>
+
+  <article class="blog-article">
+    <div class="container">
+      <header class="blog-article__header">
+        <h1>{post.data.title}</h1>
+        <div class="blog-article__meta">
+          <span class="blog-article__author">{profile.name}</span>
+          <span class="blog-article__meta-sep" aria-hidden="true">·</span>
+          <time class="blog-article__date" datetime={toDateOnlyISO(post.data.date)}>
+            {formatted}
+          </time>
+          <span class="blog-article__meta-sep" aria-hidden="true">·</span>
+          <span class="blog-article__read-time">{readingMinutes} min read</span>
+          {formattedUpdated && (
+            <>
+              <span class="blog-article__meta-sep" aria-hidden="true">·</span>
+              <span class="blog-article__updated">Updated {formattedUpdated}</span>
+            </>
+          )}
+        </div>
+      </header>
+
+      {post.data.cover && (
+        <figure class="blog-article__cover">
+          <img
+            src={`/images/blog/${post.data.cover}`}
+            alt={post.data.coverAlt ?? ''}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </figure>
+      )}
+
+      <div class="blog-article__content">
+        <Content />
+      </div>
+
+      <footer class="blog-article__footer">
+        <a href="/blog" class="blog-article__back">← Back to all posts</a>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-article {
+    min-height: 100vh;
+    padding: 4rem 0;
+  }
+
+  .blog-article__header {
+    max-width: 720px;
+    margin-inline: auto;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .blog-article__header h1 {
+    margin: 0 0 0.75rem 0;
+    font-family: var(--f-display);
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+  }
+
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    z-index: 60;
+    pointer-events: none;
+  }
+
+  .reading-progress__bar {
+    height: 100%;
+    width: 0%;
+    background: var(--c-accent);
+    transition: width 0.1s linear;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reading-progress__bar {
+      transition: none;
+    }
+  }
+
+  .blog-article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.375rem;
+    font-size: 0.9375rem;
+    color: var(--c-ink-muted);
+  }
+
+  .blog-article__author {
+    color: var(--c-ink);
+    font-weight: 500;
+  }
+
+  .blog-article__date,
+  .blog-article__read-time,
+  .blog-article__updated {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .blog-article__meta-sep {
+    color: var(--c-ink-faint);
+  }
+
+  .blog-article__cover {
+    max-width: 720px;
+    margin: 0 auto 2.5rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--c-line);
+    background: var(--c-bg-soft);
+  }
+
+  .blog-article__cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .blog-article__content {
+    max-width: 720px;
+    margin-inline: auto;
+    margin-bottom: 3rem;
+  }
+
+  /* Markdown content styling */
+  .blog-article__content :global(h2) {
+    margin-top: 2.75rem;
+    margin-bottom: 0.625rem;
+    font-family: var(--f-display);
+    font-size: 1.625rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .blog-article__content :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .blog-article__content :global(h3) {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-family: var(--f-display);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .blog-article__content :global(p) {
+    margin-bottom: 0.9rem;
+    line-height: 1.65;
+    color: var(--c-ink);
+  }
+
+  .blog-article__content :global(ul),
+  .blog-article__content :global(ol) {
+    margin-bottom: 0.9rem;
+    padding-left: 1.5rem;
+    line-height: 1.65;
+  }
+
+  .blog-article__content :global(li) {
+    margin-bottom: 0.4rem;
+  }
+
+  .blog-article__content :global(code) {
+    font-family: monospace;
+    font-size: 0.9em;
+    background: color-mix(in srgb, var(--c-line) 80%, transparent);
+    padding: 0.125em 0.375em;
+    border-radius: 0.25em;
+  }
+
+  .blog-article__content :global(pre) {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--c-line) 80%, transparent);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .blog-article__content :global(pre code) {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .blog-article__content :global(blockquote) {
+    margin: 1.5rem 0;
+    padding: 0.875rem 1.125rem;
+    background: color-mix(in srgb, var(--c-accent) 7%, var(--c-bg-soft));
+    border-left: 3px solid var(--c-accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-style: normal;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--c-ink);
+  }
+
+  .blog-article__content :global(blockquote p) {
+    margin-bottom: 0;
+  }
+
+  .blog-article__content :global(blockquote strong) {
+    color: var(--c-accent);
+  }
+
+  .blog-article__footer {
+    max-width: 720px;
+    margin-inline: auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .blog-article__back {
+    font-size: 0.9375rem;
+    color: var(--c-ink-muted);
+    text-decoration: none;
+    transition: color 0.2s var(--ease);
+  }
+
+  .blog-article__back:hover {
+    color: var(--c-accent);
+  }
+
+  @media (max-width: 640px) {
+    .blog-article {
+      padding: 2rem 0;
+    }
+
+    .blog-article__header h1 {
+      font-size: clamp(1.75rem, 7vw, 2.25rem);
+    }
+  }
+</style>
+
+<script>
+  const progressBar = document.getElementById('reading-progress-bar');
+
+  if (progressBar) {
+    const updateProgress = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = scrollable > 0 ? Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)) : 0;
+      progressBar.style.width = `${pct}%`;
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+  }
+</script>

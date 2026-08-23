@@ -9,9 +9,26 @@ const isActive = (href: string) =>
   <div class="container nav__inner">
     <a class="nav__brand" href="/">{profile.brandName}</a>
 
+    <button
+      type="button"
+      class="nav__toggle"
+      aria-expanded="false"
+      aria-controls="primary-nav-list"
+      aria-label="Toggle navigation menu"
+    >
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
+
     <nav aria-label="Primary">
-      <ul class="nav__list">
+      <ul class="nav__list" id="primary-nav-list">
         <li><a href="/#work" class="nav__link">Portfolio</a></li>
+        <li>
+          <a href="/blog" class="nav__link" aria-current={isActive('/blog') ? 'page' : undefined}>
+            Blog
+          </a>
+        </li>
         <li>
           <a href="/how-we-work" class="nav__link" aria-current={isActive('/how-we-work') ? 'page' : undefined}>
             How We Work
@@ -96,23 +113,100 @@ const isActive = (href: string) =>
   .nav__link[aria-current='page'] { color: var(--c-ink); }
   .nav__link span { font-size: 0.75em; }
 
-  /* "Engagement Model" is long enough to overflow a single nav row on narrow
-     viewports — let the link list wrap onto its own row instead of forcing
-     horizontal scroll. */
+  .nav__toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin-left: auto;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .nav__toggle-bar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--c-ink);
+    border-radius: 1px;
+    transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+  }
+
+  .nav__toggle[aria-expanded='true'] .nav__toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav__toggle[aria-expanded='true'] .nav__toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+  .nav__toggle[aria-expanded='true'] .nav__toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Below 640px, the link list collapses behind a hamburger toggle instead
+     of wrapping onto extra rows. */
   @media (max-width: 640px) {
     .nav__inner {
-      flex-wrap: wrap;
-      row-gap: 0.5rem;
-      padding-block: 0.875rem;
-      min-height: auto;
+      /* The collapsed <nav> (holding the hidden list) is still a flex item,
+         so the container's gap would otherwise add extra space after the
+         toggle button instead of letting it sit flush against the edge. */
+      gap: 0;
     }
-    .nav__inner > nav {
+
+    .nav__toggle {
+      display: flex;
+    }
+
+    .nav__list {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      padding: 0.5rem var(--s-gutter) 1.25rem;
+      background: var(--c-bg);
+      border-bottom: 1px solid var(--c-line);
+      box-shadow: 0 16px 24px -16px rgba(0, 0, 0, 0.12);
+    }
+
+    .nav__list.is-open {
+      display: flex;
+    }
+
+    .nav__list li {
       width: 100%;
     }
-    .nav__list {
-      flex-wrap: wrap;
-      row-gap: 0.5rem;
-      gap: 0.875rem 1.25rem;
+
+    .nav__link {
+      display: block;
+      padding: 0.6875rem 0;
+      font-size: 1rem;
     }
   }
 </style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav__toggle');
+  const list = document.getElementById('primary-nav-list');
+
+  if (toggle && list) {
+    toggle.addEventListener('click', () => {
+      const isOpen = list.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    list.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) {
+        list.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+</script>
