@@ -144,12 +144,42 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     for (const el of targets) observer.observe(el);
   }
 
+  // The block on the page is a literal listing of the prompt source — headings,
+  // bold, backticks, tables, all visible as markdown syntax, which is the point:
+  // it's exactly what a code block should show. But the whole reason to copy it
+  // is to paste it somewhere that reads plain text, so the copy itself strips
+  // the syntax rather than carrying it along.
+  function toPlainText(md: string): string {
+    const lines = md.split('\n');
+    const out: string[] = [];
+    for (let line of lines) {
+      const trimmed = line.trim();
+      if (/^`{3,}\w*$/.test(trimmed)) continue; // fence markers, incl. nested ones
+      if (/^-{3,}$/.test(trimmed)) continue; // horizontal rules
+      line = line.replace(/^#{1,6}\s+/, ''); // headings
+      line = line.replace(/^>\s?/, ''); // blockquote marker
+      if (/^\|.*\|$/.test(trimmed)) {
+        const cells = trimmed.replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+        if (cells.every((c) => /^-+$/.test(c))) continue; // table separator row
+        line = cells.join('\t');
+      }
+      out.push(line);
+    }
+    return out
+      .join('\n')
+      .replace(/\*\*([\s\S]+?)\*\*/g, '$1') // bold — [\s\S] so spans that wrap mid-sentence still match
+      .replace(/`([^`\n]+)`/g, '$1') // inline code
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
   // Code blocks here are prompts meant to be taken away whole, so give each one
   // a copy button. Read from the <code> element's textContent: innerText would
   // fold the soft wraps introduced by `white-space: pre-wrap` into real newlines.
   for (const pre of document.querySelectorAll<HTMLPreElement>('.blog-article__content pre')) {
     const source = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
     if (!source.trim()) continue;
+    const plain = toPlainText(source);
 
     const wrap = document.createElement('div');
     wrap.className = 'code-block';
@@ -163,28 +193,53 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     wrap.append(button);
 
     let reset: ReturnType<typeof setTimeout>;
-    button.addEventListener('click', async () => {
+    const flash = (label: string, state: string) => {
+      button.textContent = label;
+      button.dataset.state = state;
       clearTimeout(reset);
-      try {
-        await navigator.clipboard.writeText(source);
-        button.textContent = 'Copied';
-        button.dataset.state = 'done';
-      } catch {
-        // Clipboard access can be refused (permissions, insecure context). Select
-        // the block instead so the keyboard shortcut has something to act on —
-        // telling someone to press a key with nothing selected is useless.
-        const range = document.createRange();
-        range.selectNodeContents(pre);
-        const selection = window.getSelection();
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-        button.textContent = 'Selected — copy it';
-        button.dataset.state = 'failed';
-      }
       reset = setTimeout(() => {
         button.textContent = 'Copy';
         delete button.dataset.state;
       }, 2000);
+    };
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(plain);
+        flash('Copied', 'done');
+        return;
+      } catch {
+        // Clipboard access can be refused (permissions, insecure context). Fall
+        // back to the classic hidden-textarea + execCommand trick, which still
+        // works in most browsers when triggered by a real click.
+      }
+      const ta = document.createElement('textarea');
+      ta.value = plain;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try {
+        ok = document.execCommand('copy');
+      } catch {
+        ok = false;
+      }
+      document.body.removeChild(ta);
+      if (ok) {
+        flash('Copied', 'done');
+        return;
+      }
+      // Last resort: select the visible block so the keyboard shortcut has
+      // something to act on. This copies the syntax-highlighted source as-is,
+      // since there's no clean way to put plain text on the screen to select.
+      const range = document.createRange();
+      range.selectNodeContents(pre);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      flash('Selected — copy it', 'failed');
     });
   }
 </script>
