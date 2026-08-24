@@ -37,7 +37,7 @@ highlights:
   - { label: Data leaving the network, value: 'None' }
   - { label: Public ports open, value: '0' }
   - { label: Model runtime, value: 'On-device' }
-draft: true
+draft: false
 ---
 
 ## Overview

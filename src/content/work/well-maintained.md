@@ -35,7 +35,7 @@ highlights:
   - { label: Locales, value: 'EN / 中文' }
   - { label: Translation keys, value: '500+' }
   - { label: Scheduling logic, value: 'Client-side' }
-draft: true
+draft: false
 ---
 
 ## Overview
