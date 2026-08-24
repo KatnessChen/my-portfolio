@@ -173,6 +173,20 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
       .trim();
   }
 
+  // On narrow screens, tables collapse into a stack of label:value cards (CSS
+  // below) rather than scrolling sideways. The label comes from attr(data-label)
+  // in CSS, which needs the header text copied onto every cell in that column —
+  // markdown output has no such attribute, so tag it here from the header row.
+  for (const table of document.querySelectorAll<HTMLTableElement>('.blog-article__content table')) {
+    const headers = [...table.querySelectorAll('thead th')].map((th) => th.textContent ?? '');
+    if (!headers.length) continue;
+    for (const row of table.querySelectorAll('tbody tr')) {
+      row.querySelectorAll('td').forEach((td, i) => {
+        if (headers[i]) td.setAttribute('data-label', headers[i]);
+      });
+    }
+  }
+
   // Code blocks here are prompts meant to be taken away whole, so give each one
   // a copy button. Read from the <code> element's textContent: innerText would
   // fold the soft wraps introduced by `white-space: pre-wrap` into real newlines.
@@ -609,6 +623,56 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
     .blog-article__header h1 {
       font-size: clamp(1.75rem, 7vw, 2.25rem);
+    }
+
+    /* Tables become a stack of cards: each row is a card, each cell a
+       label:value line, the label pulled from the header text tagged onto
+       the cell as data-label by the script below. A 4-column table read this
+       way beats the same table squeezed into 335px of horizontal scroll. */
+    .blog-article__content :global(table) {
+      overflow-x: visible;
+    }
+
+    .blog-article__content :global(thead) {
+      display: none;
+    }
+
+    .blog-article__content :global(tbody) {
+      display: block;
+    }
+
+    .blog-article__content :global(tbody tr) {
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid var(--c-line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .blog-article__content :global(tbody tr:last-child) {
+      margin-bottom: 0;
+    }
+
+    .blog-article__content :global(tbody td) {
+      display: flex;
+      gap: 0.75rem;
+      align-items: baseline;
+      padding: 0.6rem 0.75rem;
+      border: none;
+      border-bottom: 1px solid var(--c-line);
+    }
+
+    .blog-article__content :global(tbody td:last-child) {
+      border-bottom: none;
+    }
+
+    .blog-article__content :global(tbody td::before) {
+      content: attr(data-label);
+      flex: 0 0 6.5rem;
+      color: var(--c-ink-faint);
+      font-size: var(--t-micro);
+      letter-spacing: var(--ls-label);
+      text-transform: uppercase;
     }
   }
 </style>
