@@ -234,7 +234,16 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     padding: 1rem;
     background: color-mix(in srgb, var(--c-line) 80%, transparent);
     border-radius: 0.5rem;
+    /* Long-form blocks here are prompts meant to be read and copied, not
+       source listings, so wrap rather than scroll sideways. overflow-x stays
+       as a fallback for anything genuinely unbreakable. */
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
     overflow-x: auto;
+    /* A block this long would otherwise bury the sections after it. */
+    max-height: 30rem;
+    overflow-y: auto;
+    line-height: 1.55;
   }
 
   .blog-article__content :global(pre code) {
