@@ -402,11 +402,22 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     scroll-margin-top: 2rem;
   }
 
+  /* display:block turns the table itself into the scroll container, so a wide
+     table (long file paths, four-column layouts) scrolls locally instead of
+     forcing the whole page to scroll sideways. Row/cell display roles are
+     untouched, so the table still lays out its columns normally inside. */
   .blog-article__content :global(table) {
+    display: block;
     width: 100%;
+    overflow-x: auto;
     margin: 1.5rem 0;
     border-collapse: collapse;
     font-size: 0.95em;
+  }
+
+  .blog-article__content :global(td code),
+  .blog-article__content :global(th code) {
+    white-space: nowrap;
   }
 
   .blog-article__content :global(th),
@@ -477,9 +488,6 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     overflow-x: auto;
-    /* A block this long would otherwise bury the sections after it. */
-    max-height: 30rem;
-    overflow-y: auto;
     line-height: 1.55;
   }
 
