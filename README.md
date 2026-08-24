@@ -20,6 +20,7 @@ conventions below are not enforced by tooling and are easy to break by accident.
 | Production build | `npm run build` → `dist/` |
 | Preview the build | `npm run preview` |
 | Type-check | `npm run check` |
+| What CI runs | `npm ci && npm run check && npm run build` |
 | Pull a blog post out of SQLite for editing | `npm run blog:pull -- <slug>` |
 | Push an edited post back into SQLite | `npm run blog:push -- <slug>` |
 | Regenerate the default OG image | `node scripts/make-og.mjs` |
@@ -34,9 +35,10 @@ A change is not finished until all three hold:
 2. `npm run build` completes with the expected page count
 3. **This README reflects the change**
 
-There is no test suite and no CI. The two commands are the only automated signal
-this project has, so do not skip them — and do not leave `npm run check` failing
-for a later cleanup, because nothing else will catch it.
+`.github/workflows/ci.yml` runs steps 1 and 2 on every push and on pull requests
+into `main`, so a red build is visible even if you forget. There is still no test
+suite, which means these two commands are the whole of the automated signal —
+run them locally rather than discovering a failure in CI.
 
 Step 3 is not optional and has no automated check at all, which is exactly why it
 has to be a habit. If a change alters a command, a directory, a schema, a
@@ -60,6 +62,7 @@ the wrong direction.
 ## Directory map
 
 ```
+.github/workflows/    CI — type-check and build on every push
 astro.config.mjs      Site URL, sitemap integration
 db/blog.sqlite3       Blog content (read-only at build time; committed to the repo)
 public/               Served verbatim — images, favicon, robots.txt, OG image
@@ -164,8 +167,8 @@ onto the end of the corresponding file in `src/content/work/`.
 
 Real problems, recorded so they are not rediscovered:
 
-- **No tests, no CI.** `npm run check` and `npm run build` are the whole safety
-  net, and both are manual.
+- **No tests.** CI runs `npm run check` and `npm run build`, but nothing asserts
+  that a page renders what it should. A broken layout or a wrong link ships.
 - **`scripts/shoot.mjs` only runs on the original author's machine.** Line 1
   imports Playwright through an absolute path into an unrelated local project.
   It needs Playwright as a real devDependency before anyone else can run it.
