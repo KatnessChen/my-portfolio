@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check": "astro check",
     "blog:pull": "node scripts/blog-pull.mjs",
     "blog:push": "node scripts/blog-push.mjs"
   },

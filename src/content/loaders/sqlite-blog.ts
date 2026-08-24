@@ -59,7 +59,7 @@ export function sqliteBlogLoader({ dbPath }: { dbPath: string }): Loader {
             data,
             body: row.body_md,
             rendered,
-            digest: generateDigest(row),
+            digest: generateDigest(JSON.stringify(row)),
           });
         }
 
