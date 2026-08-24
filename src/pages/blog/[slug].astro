@@ -1,10 +1,11 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { isVisible } from '../../utils/drafts';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { profile } from '../../data/profile';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getCollection('blog', isVisible);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -47,6 +48,9 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
   <article class="blog-article">
     <div class="container">
       <header class="blog-article__header">
+        {import.meta.env.DEV && post.data.draft && (
+          <p class="blog-article__draft-flag">Draft — visible locally only</p>
+        )}
         <h1>{post.data.title}</h1>
         <div class="blog-article__meta">
           <span class="blog-article__author">{profile.name}</span>
@@ -87,6 +91,52 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     </div>
   </article>
 </BaseLayout>
+
+<script>
+  // Code blocks here are prompts meant to be taken away whole, so give each one
+  // a copy button. Read from the <code> element's textContent: innerText would
+  // fold the soft wraps introduced by `white-space: pre-wrap` into real newlines.
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.blog-article__content pre')) {
+    const source = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
+    if (!source.trim()) continue;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'code-block';
+    pre.replaceWith(wrap);
+    wrap.append(pre);
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'code-block__copy';
+    button.textContent = 'Copy';
+    wrap.append(button);
+
+    let reset: ReturnType<typeof setTimeout>;
+    button.addEventListener('click', async () => {
+      clearTimeout(reset);
+      try {
+        await navigator.clipboard.writeText(source);
+        button.textContent = 'Copied';
+        button.dataset.state = 'done';
+      } catch {
+        // Clipboard access can be refused (permissions, insecure context). Select
+        // the block instead so the keyboard shortcut has something to act on —
+        // telling someone to press a key with nothing selected is useless.
+        const range = document.createRange();
+        range.selectNodeContents(pre);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        button.textContent = 'Selected — copy it';
+        button.dataset.state = 'failed';
+      }
+      reset = setTimeout(() => {
+        button.textContent = 'Copy';
+        delete button.dataset.state;
+      }, 2000);
+    });
+  }
+</script>
 
 <style>
   .blog-article {
@@ -229,6 +279,49 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     border-radius: 0.25em;
   }
 
+  .blog-article__draft-flag {
+    display: inline-block;
+    margin: 0 0 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px dashed var(--c-accent);
+    border-radius: var(--radius);
+    color: var(--c-accent);
+    font-size: var(--t-micro);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+  }
+
+  .blog-article__content :global(.code-block) {
+    position: relative;
+  }
+
+  /* Sits outside the <pre> so it stays put while the block scrolls. */
+  .blog-article__content :global(.code-block__copy) {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    background: var(--c-bg);
+    color: var(--c-ink-muted);
+    font-family: var(--f-body);
+    font-size: var(--t-micro);
+    line-height: 1.4;
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .blog-article__content :global(.code-block__copy:hover) {
+    color: var(--c-ink);
+    border-color: var(--c-ink-faint);
+  }
+
+  .blog-article__content :global(.code-block__copy[data-state='done']) {
+    color: var(--c-accent);
+    border-color: var(--c-accent);
+  }
+
   .blog-article__content :global(pre) {
     margin: 1.5rem 0;
     padding: 1rem;
@@ -237,6 +330,7 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     /* Long-form blocks here are prompts meant to be read and copied, not
        source listings, so wrap rather than scroll sideways. overflow-x stays
        as a fallback for anything genuinely unbreakable. */
+    padding-top: 2.75rem;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     overflow-x: auto;
