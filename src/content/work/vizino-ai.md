@@ -22,7 +22,7 @@ highlights:
   - { label: Identity, value: 'Google OAuth' }
   - { label: Deployment, value: 'Containerized' }
 gallery: []
-draft: true
+draft: false
 ---
 
 ## Overview
