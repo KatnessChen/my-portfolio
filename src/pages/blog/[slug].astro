@@ -406,6 +406,14 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
      table (long file paths, four-column layouts) scrolls locally instead of
      forcing the whole page to scroll sideways. Row/cell display roles are
      untouched, so the table still lays out its columns normally inside. */
+  .blog-article__content :global(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem auto;
+    border-radius: var(--radius);
+  }
+
   .blog-article__content :global(table) {
     display: block;
     width: 100%;
