@@ -77,7 +77,7 @@ src/
   layouts/            BaseLayout — SEO, OG tags, Person JSON-LD
   pages/              Routes; [slug].astro files use getStaticPaths
   styles/             tokens.css (variables) then global.css (reset + base)
-  utils/              Build-time helpers
+  utils/              Build-time helpers — drafts.ts owns the draft rule
 _originals/           Pre-optimisation source images (gitignored)
 _drafts/              Working area — see Blog workflow and Hidden sections
 ```
@@ -96,16 +96,24 @@ edits appear without a restart.
 
 ### Draft handling — read this before adding content
 
-Both collections have a `draft` boolean, and **both honour it**:
+Both collections have a `draft` boolean, and every query honours it through one
+shared helper:
 
 ```ts
-getCollection('work', ({ data }) => !data.draft)
-getCollection('blog', ({ data }) => !data.draft)
+import { isVisible } from '../utils/drafts';
+getCollection('work', isVisible)
+getCollection('blog', isVisible)
 ```
 
-An entry with `draft: true` is excluded from listings, from its own page, and
-from the sitemap. Use the same filter form in any new query — if one call site
-omits it, a draft leaks into production silently.
+`src/utils/drafts.ts` holds the whole rule: **drafts render in `npm run dev` so
+you can preview them, and never appear in a production build** — excluded from
+listings, from their own page, and from the sitemap. A draft article also shows
+a "Draft — visible locally only" badge in dev so the two states are never
+confused.
+
+Always pass `isVisible` rather than writing the filter inline. Four call sites
+previously each spelled it out, which is how the two collections drifted apart
+in the first place.
 
 `src/content/work/zenfolio.md` is currently `draft: true` on purpose: its
 `highlights` are derived from seeded test transactions, not real usage, and its
@@ -126,6 +134,13 @@ npm run blog:push -- my-post-slug   # _drafts/my-post-slug.md → db/blog.sqlite
 real store — do not treat a file in `_drafts/` as the source of truth.
 
 ## Images
+
+**Blog covers** go in `public/images/blog/` as **landscape 1600x1066 JPEG**.
+The article view renders a cover at its natural aspect ratio with no crop, so a
+portrait image becomes a full-screen wall before the first paragraph. The card
+listing crops to 1200x630 independently. Keep the untouched original in
+`_originals/` — `scripts/optimize-images.mjs` does not cover this directory, so
+resizing is manual.
 
 Screenshots land in `public/images/work/` as PNG, then
 `node scripts/optimize-images.mjs` converts them to WebP (max width 1920) and

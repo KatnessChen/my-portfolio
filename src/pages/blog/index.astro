@@ -1,9 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
+import { isVisible } from '../../utils/drafts';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogCard from '../../components/BlogCard.astro';
 
-const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const allPosts = await getCollection('blog', isVisible);
 const sorted = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 

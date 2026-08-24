@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { isVisible } from '../utils/drafts';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WorkCard from '../components/WorkCard.astro';
 import Carousel from '../components/Carousel.astro';
@@ -7,7 +8,7 @@ import SectionHeading from '../components/SectionHeading.astro';
 import Capabilities from '../components/Capabilities.astro';
 import { profile } from '../data/profile';
 
-const work = (await getCollection('work', ({ data }) => !data.draft))
+const work = (await getCollection('work', isVisible))
   .filter((e) => e.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
 ---

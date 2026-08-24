@@ -1,10 +1,11 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { isVisible } from '../../utils/drafts';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { profile } from '../../data/profile';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getCollection('blog', isVisible);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -16,7 +17,12 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+// Only h2/h3, and only when there are enough of them for an outline to be worth
+// the space. Headings inside fenced code blocks are not in this list.
+const outline = headings.filter((h: { depth: number }) => h.depth === 2 || h.depth === 3);
+const showOutline = outline.length >= 3;
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -47,6 +53,9 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
   <article class="blog-article">
     <div class="container">
       <header class="blog-article__header">
+        {import.meta.env.DEV && post.data.draft && (
+          <p class="blog-article__draft-flag">Draft — visible locally only</p>
+        )}
         <h1>{post.data.title}</h1>
         <div class="blog-article__meta">
           <span class="blog-article__author">{profile.name}</span>
@@ -77,8 +86,25 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
         </figure>
       )}
 
-      <div class="blog-article__content">
-        <Content />
+      <div class="blog-article__layout">
+        {showOutline && (
+          <aside class="blog-article__outline">
+            <nav aria-labelledby="outline-heading">
+              <p class="blog-article__outline-title" id="outline-heading">On this page</p>
+              <ol>
+                {outline.map((h: { slug: string; text: string; depth: number }) => (
+                  <li data-depth={h.depth}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </aside>
+        )}
+
+        <div class="blog-article__content">
+          <Content />
+        </div>
       </div>
 
       <footer class="blog-article__footer">
@@ -87,6 +113,150 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     </div>
   </article>
 </BaseLayout>
+
+<script>
+  // Mark the section currently in view. Without it a 19-minute article's outline
+  // tells you where you can go but not where you are.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.blog-article__outline a')];
+  if (links.length) {
+    const byId = new Map(links.map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
+    const targets = [...byId.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const seen = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) seen.add(entry.target.id);
+          else seen.delete(entry.target.id);
+        }
+        // Topmost heading currently on screen; falls back to the last one passed.
+        const current = targets.find((el) => seen.has(el.id));
+        if (!current) return;
+        for (const [id, link] of byId) {
+          if (id === current.id) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        }
+      },
+      { rootMargin: '0px 0px -70% 0px' }
+    );
+    for (const el of targets) observer.observe(el);
+  }
+
+  // The block on the page is a literal listing of the prompt source — headings,
+  // bold, backticks, tables, all visible as markdown syntax, which is the point:
+  // it's exactly what a code block should show. But the whole reason to copy it
+  // is to paste it somewhere that reads plain text, so the copy itself strips
+  // the syntax rather than carrying it along.
+  function toPlainText(md: string): string {
+    const lines = md.split('\n');
+    const out: string[] = [];
+    for (let line of lines) {
+      const trimmed = line.trim();
+      if (/^`{3,}\w*$/.test(trimmed)) continue; // fence markers, incl. nested ones
+      if (/^-{3,}$/.test(trimmed)) continue; // horizontal rules
+      line = line.replace(/^#{1,6}\s+/, ''); // headings
+      line = line.replace(/^>\s?/, ''); // blockquote marker
+      if (/^\|.*\|$/.test(trimmed)) {
+        const cells = trimmed.replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+        if (cells.every((c) => /^-+$/.test(c))) continue; // table separator row
+        line = cells.join('\t');
+      }
+      out.push(line);
+    }
+    return out
+      .join('\n')
+      .replace(/\*\*([\s\S]+?)\*\*/g, '$1') // bold — [\s\S] so spans that wrap mid-sentence still match
+      .replace(/`([^`\n]+)`/g, '$1') // inline code
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  // On narrow screens, tables collapse into a stack of label:value cards (CSS
+  // below) rather than scrolling sideways. The label comes from attr(data-label)
+  // in CSS, which needs the header text copied onto every cell in that column —
+  // markdown output has no such attribute, so tag it here from the header row.
+  for (const table of document.querySelectorAll<HTMLTableElement>('.blog-article__content table')) {
+    const headers = [...table.querySelectorAll('thead th')].map((th) => th.textContent ?? '');
+    if (!headers.length) continue;
+    for (const row of table.querySelectorAll('tbody tr')) {
+      row.querySelectorAll('td').forEach((td, i) => {
+        if (headers[i]) td.setAttribute('data-label', headers[i]);
+      });
+    }
+  }
+
+  // Code blocks here are prompts meant to be taken away whole, so give each one
+  // a copy button. Read from the <code> element's textContent: innerText would
+  // fold the soft wraps introduced by `white-space: pre-wrap` into real newlines.
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.blog-article__content pre')) {
+    const source = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
+    if (!source.trim()) continue;
+    const plain = toPlainText(source);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'code-block';
+    pre.replaceWith(wrap);
+    wrap.append(pre);
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'code-block__copy';
+    button.textContent = 'Copy';
+    wrap.append(button);
+
+    let reset: ReturnType<typeof setTimeout>;
+    const flash = (label: string, state: string) => {
+      button.textContent = label;
+      button.dataset.state = state;
+      clearTimeout(reset);
+      reset = setTimeout(() => {
+        button.textContent = 'Copy';
+        delete button.dataset.state;
+      }, 2000);
+    };
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(plain);
+        flash('Copied', 'done');
+        return;
+      } catch {
+        // Clipboard access can be refused (permissions, insecure context). Fall
+        // back to the classic hidden-textarea + execCommand trick, which still
+        // works in most browsers when triggered by a real click.
+      }
+      const ta = document.createElement('textarea');
+      ta.value = plain;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try {
+        ok = document.execCommand('copy');
+      } catch {
+        ok = false;
+      }
+      document.body.removeChild(ta);
+      if (ok) {
+        flash('Copied', 'done');
+        return;
+      }
+      // Last resort: select the visible block so the keyboard shortcut has
+      // something to act on. This copies the syntax-highlighted source as-is,
+      // since there's no clean way to put plain text on the screen to select.
+      const range = document.createRange();
+      range.selectNodeContents(pre);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      flash('Selected — copy it', 'failed');
+    });
+  }
+</script>
 
 <style>
   .blog-article {
@@ -229,12 +399,177 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     border-radius: 0.25em;
   }
 
+  .blog-article__layout {
+    position: relative;
+  }
+
+  /* Hidden below the width at which the outline fits beside the 720px column
+     without pushing it off centre. Content stays centred either way. */
+  .blog-article__outline {
+    display: none;
+  }
+
+  @media (min-width: 1240px) {
+    .blog-article__outline {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: calc(50% + 360px + 2rem);
+      width: 180px;
+      height: 100%;
+    }
+
+    .blog-article__outline nav {
+      position: sticky;
+      top: 2.5rem;
+      max-height: calc(100vh - 5rem);
+      overflow-y: auto;
+    }
+  }
+
+  .blog-article__outline-title {
+    margin: 0 0 0.75rem;
+    color: var(--c-ink-faint);
+    font-size: var(--t-micro);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+  }
+
+  .blog-article__outline ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--c-line);
+  }
+
+  .blog-article__outline li[data-depth='3'] a {
+    padding-left: 1.5rem;
+  }
+
+  .blog-article__outline a {
+    display: block;
+    padding: 0.35rem 0 0.35rem 0.75rem;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    color: var(--c-ink-muted);
+    font-size: var(--t-small);
+    line-height: 1.35;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .blog-article__outline a:hover {
+    color: var(--c-ink);
+  }
+
+  .blog-article__outline a[aria-current='true'] {
+    color: var(--c-ink);
+    border-left-color: var(--c-accent);
+  }
+
+  .blog-article__content :global(h2) {
+    scroll-margin-top: 2rem;
+  }
+
+  /* display:block turns the table itself into the scroll container, so a wide
+     table (long file paths, four-column layouts) scrolls locally instead of
+     forcing the whole page to scroll sideways. Row/cell display roles are
+     untouched, so the table still lays out its columns normally inside. */
+  .blog-article__content :global(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem auto;
+    border-radius: var(--radius);
+  }
+
+  .blog-article__content :global(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    font-size: 0.95em;
+  }
+
+  .blog-article__content :global(td code),
+  .blog-article__content :global(th code) {
+    white-space: nowrap;
+  }
+
+  .blog-article__content :global(th),
+  .blog-article__content :global(td) {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--c-line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .blog-article__content :global(thead th) {
+    background: var(--c-bg-soft);
+    font-weight: 500;
+  }
+
+  .blog-article__draft-flag {
+    display: inline-block;
+    margin: 0 0 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px dashed var(--c-accent);
+    border-radius: var(--radius);
+    color: var(--c-accent);
+    font-size: var(--t-micro);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+  }
+
+  .blog-article__content :global(.code-block) {
+    position: relative;
+  }
+
+  /* Sits outside the <pre> so it stays put while the block scrolls. */
+  .blog-article__content :global(.code-block__copy) {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    background: var(--c-bg);
+    color: var(--c-ink-muted);
+    font-family: var(--f-body);
+    font-size: var(--t-micro);
+    line-height: 1.4;
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .blog-article__content :global(.code-block__copy:hover) {
+    color: var(--c-ink);
+    border-color: var(--c-ink-faint);
+  }
+
+  .blog-article__content :global(.code-block__copy[data-state='done']) {
+    color: var(--c-accent);
+    border-color: var(--c-accent);
+  }
+
   .blog-article__content :global(pre) {
     margin: 1.5rem 0;
     padding: 1rem;
     background: color-mix(in srgb, var(--c-line) 80%, transparent);
     border-radius: 0.5rem;
+    /* Long-form blocks here are prompts meant to be read and copied, not
+       source listings, so wrap rather than scroll sideways. overflow-x stays
+       as a fallback for anything genuinely unbreakable. */
+    padding-top: 2.75rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
     overflow-x: auto;
+    line-height: 1.55;
+    /* Full prompt runs to ~8000px unwrapped; cap it so it doesn't bury the
+       sections after it, and let the copy button carry the rest away. */
+    max-height: 30rem;
+    overflow-y: auto;
   }
 
   .blog-article__content :global(pre code) {
@@ -288,6 +623,56 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
     .blog-article__header h1 {
       font-size: clamp(1.75rem, 7vw, 2.25rem);
+    }
+
+    /* Tables become a stack of cards: each row is a card, each cell a
+       label:value line, the label pulled from the header text tagged onto
+       the cell as data-label by the script below. A 4-column table read this
+       way beats the same table squeezed into 335px of horizontal scroll. */
+    .blog-article__content :global(table) {
+      overflow-x: visible;
+    }
+
+    .blog-article__content :global(thead) {
+      display: none;
+    }
+
+    .blog-article__content :global(tbody) {
+      display: block;
+    }
+
+    .blog-article__content :global(tbody tr) {
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid var(--c-line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .blog-article__content :global(tbody tr:last-child) {
+      margin-bottom: 0;
+    }
+
+    .blog-article__content :global(tbody td) {
+      display: flex;
+      gap: 0.75rem;
+      align-items: baseline;
+      padding: 0.6rem 0.75rem;
+      border: none;
+      border-bottom: 1px solid var(--c-line);
+    }
+
+    .blog-article__content :global(tbody td:last-child) {
+      border-bottom: none;
+    }
+
+    .blog-article__content :global(tbody td::before) {
+      content: attr(data-label);
+      flex: 0 0 6.5rem;
+      color: var(--c-ink-faint);
+      font-size: var(--t-micro);
+      letter-spacing: var(--ls-label);
+      text-transform: uppercase;
     }
   }
 </style>

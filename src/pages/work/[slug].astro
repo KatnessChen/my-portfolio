@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { isVisible } from '../../utils/drafts';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MetaBar from '../../components/MetaBar.astro';
 import StatRow from '../../components/StatRow.astro';
@@ -8,7 +9,7 @@ import { categoryLabel } from '../../data/categories';
 import { workImageSize } from '../../utils/imageSize';
 
 export async function getStaticPaths() {
-  const all = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+  const all = (await getCollection('work', isVisible)).sort((a, b) => a.data.order - b.data.order);
 
   return all.map((entry, i) => ({
     params: { slug: entry.slug },

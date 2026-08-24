@@ -1,0 +1,36 @@
+<svg viewBox="0 0 460 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="radarTitle radarDesc">
+<title id="radarTitle">CRAFTS radar chart, fabricated example</title>
+<desc id="radarDesc">A hexagonal radar chart with six axes ordered clockwise from the top: Clarity 7, Regression safety 3, Approachability 7, Technical fit 6, Tidiness 6, Security 8. Overall score 6.2 out of 10, printed above the chart.</desc>
+<text x="230" y="22" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" fill="#6B6B6B">Overall <tspan font-weight="600" fill="#1A1A1A" font-size="15">6.2</tspan> / 10</text>
+<g>
+  <polygon points="230,222 254.2487113059643,236 254.2487113059643,264 230,278 205.75128869403574,264 205.7512886940357,236" fill="none" stroke="#E8E8E8" stroke-width="1"/>
+  <polygon points="230,194 278.4974226119286,222 278.4974226119286,278 230,306 181.50257738807144,278 181.50257738807144,222" fill="none" stroke="#E8E8E8" stroke-width="1"/>
+  <polygon points="230,166 302.74613391789285,208 302.74613391789285,292 230,334 157.25386608210715,292.00000000000006 157.25386608210715,208" fill="none" stroke="#E8E8E8" stroke-width="1"/>
+  <polygon points="230,138 326.9948452238571,194 326.99484522385717,306 230,362 133.0051547761429,306.00000000000006 133.0051547761429,194" fill="none" stroke="#E8E8E8" stroke-width="1"/>
+  <polygon points="230,110 351.2435565298214,180 351.24355652982143,320 230.00000000000003,390 108.75644347017861,320.00000000000006 108.7564434701786,180" fill="none" stroke="#E8E8E8" stroke-width="1"/>
+  <line x1="230" y1="250" x2="230.0" y2="110.0" stroke="#E8E8E8" stroke-width="1"/>
+  <line x1="230" y1="250" x2="351.2" y2="180.0" stroke="#E8E8E8" stroke-width="1"/>
+  <line x1="230" y1="250" x2="351.2" y2="320.0" stroke="#E8E8E8" stroke-width="1"/>
+  <line x1="230" y1="250" x2="230.0" y2="390.0" stroke="#E8E8E8" stroke-width="1"/>
+  <line x1="230" y1="250" x2="108.8" y2="320.0" stroke="#E8E8E8" stroke-width="1"/>
+  <line x1="230" y1="250" x2="108.8" y2="180.0" stroke="#E8E8E8" stroke-width="1"/>
+  <text x="236" y="219.0" font-size="10" fill="#9B9B9B" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">2</text>
+  <text x="236" y="191.0" font-size="10" fill="#9B9B9B" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">4</text>
+  <text x="236" y="163.0" font-size="10" fill="#9B9B9B" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">6</text>
+  <text x="236" y="135.0" font-size="10" fill="#9B9B9B" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">8</text>
+  <text x="236" y="107.0" font-size="10" fill="#9B9B9B" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">10</text>
+  <polygon points="230,152 266.3730669589464,229 314.870489570875,299 230,334 157.25386608210715,292.00000000000006 133.0051547761429,194" fill="rgba(11, 93, 81, 0.12)" stroke="#0B5D51" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="230.0" cy="152.0" r="4.5" fill="#0B5D51" stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="266.4" cy="229.0" r="4.5" fill="#0B5D51" stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="314.9" cy="299.0" r="4.5" fill="#0B5D51" stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="230.0" cy="334.0" r="4.5" fill="#0B5D51" stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="157.3" cy="292.0" r="4.5" fill="#0B5D51" stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="133.0" cy="194.0" r="4.5" fill="#0B5D51" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text x="230.0" y="76.0" text-anchor="middle" dominant-baseline="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"><tspan font-size="15" font-weight="600" fill="#1A1A1A">C</tspan><tspan font-size="12" fill="#6B6B6B" dx="4">7/10</tspan></text>
+  <text x="380.7" y="163.0" text-anchor="start" dominant-baseline="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"><tspan font-size="15" font-weight="600" fill="#1A1A1A">R</tspan><tspan font-size="12" fill="#6B6B6B" dx="4">3/10</tspan></text>
+  <text x="380.7" y="337.0" text-anchor="start" dominant-baseline="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"><tspan font-size="15" font-weight="600" fill="#1A1A1A">A</tspan><tspan font-size="12" fill="#6B6B6B" dx="4">7/10</tspan></text>
+  <text x="230.0" y="424.0" text-anchor="middle" dominant-baseline="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"><tspan font-size="15" font-weight="600" fill="#1A1A1A">F</tspan><tspan font-size="12" fill="#6B6B6B" dx="4">6/10</tspan></text>
+  <text x="79.3" y="337.0" text-anchor="end" dominant-baseline="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"><tspan font-size="15" font-weight="600" fill="#1A1A1A">T</tspan><tspan font-size="12" fill="#6B6B6B" dx="4">6/10</tspan></text>
+  <text x="79.3" y="163.0" text-anchor="end" dominant-baseline="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"><tspan font-size="15" font-weight="600" fill="#1A1A1A">S</tspan><tspan font-size="12" fill="#6B6B6B" dx="4">8/10</tspan></text>
+</g>
+</svg>
