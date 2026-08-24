@@ -135,6 +135,13 @@ real store — do not treat a file in `_drafts/` as the source of truth.
 
 ## Images
 
+**Blog covers** go in `public/images/blog/` as **landscape 1600x1066 JPEG**.
+The article view renders a cover at its natural aspect ratio with no crop, so a
+portrait image becomes a full-screen wall before the first paragraph. The card
+listing crops to 1200x630 independently. Keep the untouched original in
+`_originals/` — `scripts/optimize-images.mjs` does not cover this directory, so
+resizing is manual.
+
 Screenshots land in `public/images/work/` as PNG, then
 `node scripts/optimize-images.mjs` converts them to WebP (max width 1920) and
 moves the originals to `_originals/`. Reference the `.webp` filename from

@@ -17,7 +17,12 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+// Only h2/h3, and only when there are enough of them for an outline to be worth
+// the space. Headings inside fenced code blocks are not in this list.
+const outline = headings.filter((h: { depth: number }) => h.depth === 2 || h.depth === 3);
+const showOutline = outline.length >= 3;
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -81,8 +86,25 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
         </figure>
       )}
 
-      <div class="blog-article__content">
-        <Content />
+      <div class="blog-article__layout">
+        {showOutline && (
+          <aside class="blog-article__outline">
+            <nav aria-labelledby="outline-heading">
+              <p class="blog-article__outline-title" id="outline-heading">On this page</p>
+              <ol>
+                {outline.map((h: { slug: string; text: string; depth: number }) => (
+                  <li data-depth={h.depth}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </aside>
+        )}
+
+        <div class="blog-article__content">
+          <Content />
+        </div>
       </div>
 
       <footer class="blog-article__footer">
@@ -93,6 +115,35 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 </BaseLayout>
 
 <script>
+  // Mark the section currently in view. Without it a 19-minute article's outline
+  // tells you where you can go but not where you are.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.blog-article__outline a')];
+  if (links.length) {
+    const byId = new Map(links.map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
+    const targets = [...byId.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const seen = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) seen.add(entry.target.id);
+          else seen.delete(entry.target.id);
+        }
+        // Topmost heading currently on screen; falls back to the last one passed.
+        const current = targets.find((el) => seen.has(el.id));
+        if (!current) return;
+        for (const [id, link] of byId) {
+          if (id === current.id) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        }
+      },
+      { rootMargin: '0px 0px -70% 0px' }
+    );
+    for (const el of targets) observer.observe(el);
+  }
+
   // Code blocks here are prompts meant to be taken away whole, so give each one
   // a copy button. Read from the <code> element's textContent: innerText would
   // fold the soft wraps introduced by `white-space: pre-wrap` into real newlines.
@@ -277,6 +328,98 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     background: color-mix(in srgb, var(--c-line) 80%, transparent);
     padding: 0.125em 0.375em;
     border-radius: 0.25em;
+  }
+
+  .blog-article__layout {
+    position: relative;
+  }
+
+  /* Hidden below the width at which the outline fits beside the 720px column
+     without pushing it off centre. Content stays centred either way. */
+  .blog-article__outline {
+    display: none;
+  }
+
+  @media (min-width: 1240px) {
+    .blog-article__outline {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: calc(50% + 360px + 2rem);
+      width: 180px;
+      height: 100%;
+    }
+
+    .blog-article__outline nav {
+      position: sticky;
+      top: 2.5rem;
+      max-height: calc(100vh - 5rem);
+      overflow-y: auto;
+    }
+  }
+
+  .blog-article__outline-title {
+    margin: 0 0 0.75rem;
+    color: var(--c-ink-faint);
+    font-size: var(--t-micro);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+  }
+
+  .blog-article__outline ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--c-line);
+  }
+
+  .blog-article__outline li[data-depth='3'] a {
+    padding-left: 1.5rem;
+  }
+
+  .blog-article__outline a {
+    display: block;
+    padding: 0.35rem 0 0.35rem 0.75rem;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    color: var(--c-ink-muted);
+    font-size: var(--t-small);
+    line-height: 1.35;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .blog-article__outline a:hover {
+    color: var(--c-ink);
+  }
+
+  .blog-article__outline a[aria-current='true'] {
+    color: var(--c-ink);
+    border-left-color: var(--c-accent);
+  }
+
+  .blog-article__content :global(h2) {
+    scroll-margin-top: 2rem;
+  }
+
+  .blog-article__content :global(table) {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    font-size: 0.95em;
+  }
+
+  .blog-article__content :global(th),
+  .blog-article__content :global(td) {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--c-line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .blog-article__content :global(thead th) {
+    background: var(--c-bg-soft);
+    font-weight: 500;
   }
 
   .blog-article__draft-flag {
