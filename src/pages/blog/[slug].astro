@@ -552,6 +552,10 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
     overflow-wrap: anywhere;
     overflow-x: auto;
     line-height: 1.55;
+    /* Full prompt runs to ~8000px unwrapped; cap it so it doesn't bury the
+       sections after it, and let the copy button carry the rest away. */
+    max-height: 30rem;
+    overflow-y: auto;
   }
 
   .blog-article__content :global(pre code) {
